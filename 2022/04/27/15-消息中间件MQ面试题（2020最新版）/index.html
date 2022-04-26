@@ -1,0 +1,477 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Muise | Muise</title><meta name="keywords" content="muise,junsijia"><meta name="author" content="Muise"><meta name="copyright" content="Muise"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="为什么使用MQ？MQ的优点简答 异步处理 - 相比于传统的串行、并行方式，提高了系统吞吐量。  应用解耦 - 系统间通过消息通信，不用关心其他系统的处理。  流量削锋 - 可以通过消息队列长度控制请求量；可以缓解短时间内的高并发请 求。  日志处理 - 解决大量日志传输。  消息通讯 - 消息队列一般都内置了高效的通信机制，因此也可以用在纯的消息通 讯。比如实现点对点消息队列，或者聊天室等。  详">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Muise">
+<meta property="og:url" content="https://blog.muise.tk/2022/04/27/15-%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6MQ%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89/index.html">
+<meta property="og:site_name" content="Muise">
+<meta property="og:description" content="为什么使用MQ？MQ的优点简答 异步处理 - 相比于传统的串行、并行方式，提高了系统吞吐量。  应用解耦 - 系统间通过消息通信，不用关心其他系统的处理。  流量削锋 - 可以通过消息队列长度控制请求量；可以缓解短时间内的高并发请 求。  日志处理 - 解决大量日志传输。  消息通讯 - 消息队列一般都内置了高效的通信机制，因此也可以用在纯的消息通 讯。比如实现点对点消息队列，或者聊天室等。  详">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2020/12/10/6U2CcwkzxjRtrNV.jpg">
+<meta property="article:published_time" content="2022-04-26T16:22:23.185Z">
+<meta property="article:modified_time" content="2021-02-28T09:39:12.813Z">
+<meta property="article:author" content="Muise">
+<meta property="article:tag" content="muise,junsijia">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2020/12/10/6U2CcwkzxjRtrNV.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://blog.muise.tk/2022/04/27/15-%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6MQ%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: {"limitDay":180,"position":"top","messagePrev":"自上次文章更新已有","messageNext":"天，文章的内容可能已经过时"},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":249,"languages":{"author":"作者: Muise","link":"链接: ","source":"来源: Muise","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#121212","position":"bottom-centers"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Muise',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: true,
+  isToc: true,
+  postUpdate: '2021-02-28 17:39:12'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xiaopengand/blogCdn@latest/xpand_fish.css"><meta name="generator" content="Hexo 6.1.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://blog.muise.tk/img/favicon.png" onerror="onerror=null;src='/img/favicon.png'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://i.loli.net/2020/12/10/6U2CcwkzxjRtrNV.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Muise</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">无题</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-04-26T16:22:23.185Z" title="发表于 2022-04-27 00:22:23">2022-04-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-02-28T09:39:12.813Z" title="更新于 2021-02-28 17:39:12">2021-02-28</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">7.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>24分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="为什么使用MQ？MQ的优点"><a href="#为什么使用MQ？MQ的优点" class="headerlink" title="为什么使用MQ？MQ的优点"></a>为什么使用MQ？MQ的优点</h2><h3 id="简答"><a href="#简答" class="headerlink" title="简答"></a>简答</h3><ul>
+<li>异步处理 - 相比于传统的串行、并行方式，提高了系统吞吐量。 </li>
+<li>应用解耦 - 系统间通过消息通信，不用关心其他系统的处理。 </li>
+<li>流量削锋 - 可以通过消息队列长度控制请求量；可以缓解短时间内的高并发请 求。 </li>
+<li>日志处理 - 解决大量日志传输。 </li>
+<li>消息通讯 - 消息队列一般都内置了高效的通信机制，因此也可以用在纯的消息通 讯。比如实现点对点消息队列，或者聊天室等。</li>
+</ul>
+<h3 id="详答"><a href="#详答" class="headerlink" title="详答"></a>详答</h3><p>主要是：解耦、异步、削峰。 </p>
+<p><strong>解耦：</strong>A 系统发送数据到 BCD 三个系统，通过接口调用发送。如果 E 系统也要 这个数据呢？那如果 C 系统现在不需要了呢？A 系统负责人几乎崩溃…A 系统 跟其它各种乱七八糟的系统严重耦合，A 系统产生一条比较关键的数据，很多系 统都需要 A 系统将这个数据发送过来。如果使用 MQ，A 系统产生一条数据， 发送到 MQ 里面去，哪个系统需要数据自己去 MQ 里面消费。如果新系统需要 数据，直接从 MQ 里消费即可；如果某个系统不需要这条数据了，就取消对  MQ 消息的消费即可。这样下来，A 系统压根儿不需要去考虑要给谁发送数 据，不需要维护这个代码，也不需要考虑人家是否调用成功、失败超时等情况。 就是一个系统或者一个模块，调用了多个系统或者模块，互相之间的调用很复 杂，维护起来很麻烦。但是其实这个调用是不需要直接同步调用接口的，如果用  MQ 给它异步化解耦。 </p>
+<p><strong>异步：</strong>A 系统接收一个请求，需要在自己本地写库，还需要在 BCD 三个系统写 库，自己本地写库要 3ms，BCD 三个系统分别写库要 300ms、450ms、 200ms。最终请求总延时是 3 + 300 + 450 + 200 &#x3D; 953ms，接近 1s，用户 感觉搞个什么东西，慢死了慢死了。用户通过浏览器发起请求。如果使用  MQ，那么 A 系统连续发送 3 条消息到 MQ 队列中，假如耗时 5ms，A 系统从 接受一个请求到返回响应给用户，总时长是 3 + 5 &#x3D; 8ms。 </p>
+<p><strong>削峰：</strong>减少高峰时期对服务器压力。</p>
+<h2 id="消息队列有什么优缺点？RabbitMQ有什么优缺点？"><a href="#消息队列有什么优缺点？RabbitMQ有什么优缺点？" class="headerlink" title="消息队列有什么优缺点？RabbitMQ有什么优缺点？"></a>消息队列有什么优缺点？RabbitMQ有什么优缺点？</h2><p>优点上面已经说了，就是**在特殊场景下有其对应的好处，解耦、异步、削峰。 **</p>
+<p>缺点有以下几个： </p>
+<p>系统可用性降低 </p>
+<p>本来系统运行好好的，现在你非要加入个消息队列进去，那消息队列挂了，你的 系统不是呵呵了。因此，系统可用性会降低； </p>
+<p>系统复杂度提高 </p>
+<p>加入了消息队列，要多考虑很多方面的问题，比如：一致性问题、如何保证消息 不被重复消费、如何保证消息可靠性传输等。因此，需要考虑的东西更多，复杂 性增大。 </p>
+<p>一致性问题 </p>
+<p>A 系统处理完了直接返回成功了，人都以为你这个请求就成功了；但是问题是， 要是 BCD 三个系统那里，BD 两个系统写库成功了，结果 C 系统写库失败了， 咋整？你这数据就不一致了。 </p>
+<p>所以消息队列实际是一种非常复杂的架构，你引入它有很多好处，但是也得针对 它带来的坏处做各种额外的技术方案和架构来规避掉，做好之后，你会发现，妈 呀，系统复杂度提升了一个数量级，也许是复杂了 10 倍。但是关键时刻，用， 还是得用的。 </p>
+<h2 id="你们公司生产环境用的是什么消息中间件？"><a href="#你们公司生产环境用的是什么消息中间件？" class="headerlink" title="你们公司生产环境用的是什么消息中间件？"></a>你们公司生产环境用的是什么消息中间件？</h2><p>这个首先你可以说下你们公司选用的是什么消息中间件，比如用的是 RabbitMQ，然后可以初步给一些你对不同MQ中间件技术的选型分析。 </p>
+<p>举个例子：比如说ActiveMQ是老牌的消息中间件，国内很多公司过去运用的还 是非常广泛的，功能很强大。 </p>
+<p>但是问题在于没法确认ActiveMQ可以支撑互联网公司的高并发、高负载以及高 吞吐的复杂场景，在国内互联网公司落地较少。而且使用较多的是一些传统企 业，用ActiveMQ做异步调用和系统解耦。</p>
+<p>然后你可以说说RabbitMQ，他的好处在于可以支撑高并发、高吞吐、性能很 高，同时有非常完善便捷的后台管理界面可以使用。 </p>
+<p>另外，他还支持集群化、高可用部署架构、消息高可靠支持，功能较为完善。</p>
+<p>而且经过调研，国内各大互联网公司落地大规模RabbitMQ集群支撑自身业务的 case较多，国内各种中小型互联网公司使用RabbitMQ的实践也比较多。 </p>
+<p>除此之外，RabbitMQ的开源社区很活跃，较高频率的迭代版本，来修复发现的 bug以及进行各种优化，因此综合考虑过后，公司采取了RabbitMQ。 </p>
+<p>但是RabbitMQ也有一点缺陷，就是他自身是基于erlang语言开发的，所以导致 较为难以分析里面的源码，也较难进行深层次的源码定制和改造，毕竟需要较为 扎实的erlang语言功底才可以。 </p>
+<p>然后可以聊聊RocketMQ，是阿里开源的，经过阿里的生产环境的超高并发、 高吞吐的考验，性能卓越，同时还支持分布式事务等特殊场景。 </p>
+<p>而且RocketMQ是基于Java语言开发的，适合深入阅读源码，有需要可以站在 源码层面解决线上生产问题，包括源码的二次开发和改造。 </p>
+<p>另外就是Kafka。Kafka提供的消息中间件的功能明显较少一些，相对上述几款 MQ中间件要少很多。 </p>
+<p>但是Kafka的优势在于专为超高吞吐量的实时日志采集、实时数据同步、实时数 据计算等场景来设计。 </p>
+<p>因此Kafka在大数据领域中配合实时计算技术（比如Spark Streaming、 Storm、Flink）使用的较多。但是在传统的MQ中间件使用场景中较少采用。 </p>
+<h2 id="Kafka、ActiveMQ、RabbitMQ、RocketMQ-有-什么优缺点？"><a href="#Kafka、ActiveMQ、RabbitMQ、RocketMQ-有-什么优缺点？" class="headerlink" title="Kafka、ActiveMQ、RabbitMQ、RocketMQ 有 什么优缺点？"></a>Kafka、ActiveMQ、RabbitMQ、RocketMQ 有 什么优缺点？</h2><table>
+<thead>
+<tr>
+<th>ActiveMQ</th>
+<th>RabbitMQ</th>
+<th>RocketMQ</th>
+<th>Kafka</th>
+<th>ZeroMQ</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>单机吞吐 量</td>
+<td>比 RabbitM Q低</td>
+<td>2.6w&#x2F;s（ 消息做持 久化）</td>
+<td>11.6w&#x2F;s</td>
+<td>17.3w&#x2F;s</td>
+<td>29w&#x2F;s</td>
+</tr>
+<tr>
+<td>开发语言</td>
+<td>Java</td>
+<td>Erlang</td>
+<td>Java</td>
+<td>Scala&#x2F;Java</td>
+<td>C</td>
+</tr>
+<tr>
+<td>主要维护者</td>
+<td>Apache</td>
+<td>Mozilla&#x2F;Spring</td>
+<td>Alibaba</td>
+<td>Apache</td>
+<td>iMatix创始人已去世</td>
+</tr>
+<tr>
+<td>成熟度</td>
+<td>成熟</td>
+<td>成熟</td>
+<td>开源版本不够成熟</td>
+<td>比较成熟</td>
+<td>只有C、PHP等版本成熟</td>
+</tr>
+<tr>
+<td>订阅形式</td>
+<td>点对点 (p2p)、广 播（发布订阅）</td>
+<td>提供了4 种： direct,  topic,Headers 和 fanout。 fanout就 是广播模 式</td>
+<td>基于 topic&#x2F;me ssageTag 以及按照消息类 型、属性 进行正则 匹配的发 布订阅模 式</td>
+<td>基于topic 以及按照 topic进行 正则匹配的发布订 阅模式</td>
+<td>点对点(P2P)</td>
+</tr>
+<tr>
+<td>持久化</td>
+<td>支持少量 堆积</td>
+<td>支持少量 堆积</td>
+<td>支持大量 堆积</td>
+<td>支持大量 堆积</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>顺序消息</td>
+<td>不支持</td>
+<td>不支持</td>
+<td>支持</td>
+<td>支持</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>性能稳定 性</td>
+<td>好</td>
+<td>好</td>
+<td>一般</td>
+<td>较差</td>
+<td>很好</td>
+</tr>
+<tr>
+<td>集群方式</td>
+<td>支持简单 集群模 式，比 如’主备’，对 高级集群 模式支持 不好。</td>
+<td>支持简单 集群，’复 制’模 式，对高 级集群模 式支持不 好。</td>
+<td>常用 多 对’Mast erSlave’ 模 式，开源 版本需手 动切换 Slave变成 Master</td>
+<td>天然 的‘Lead erSlave’无 状态集 群，每台 服务器既 是Master 也是Slave</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>管理界面</td>
+<td>一般</td>
+<td>较好</td>
+<td>一般</td>
+<td>无</td>
+<td>无</td>
+</tr>
+</tbody></table>
+<p>综上，各种对比之后，有如下建议： </p>
+<p>一般的业务系统要引入 MQ，最早大家都用 ActiveMQ，但是现在确实大家用 的不多了，没经过大规模吞吐量场景的验证，社区也不是很活跃，所以大家还是 算了吧，我个人不推荐用这个了； </p>
+<p>后来大家开始用 RabbitMQ，但是确实 erlang 语言阻止了大量的 Java 工程师 去深入研究和掌控它，对公司而言，几乎处于不可控的状态，但是确实人家是开 源的，比较稳定的支持，活跃度也高； </p>
+<p>不过现在确实越来越多的公司会去用 RocketMQ，确实很不错，毕竟是阿里出 品，但社区可能有突然黄掉的风险（目前 RocketMQ 已捐给 <a target="_blank" rel="noopener" href="https://github.com/apache/rocketmq">Apache</a>，但  GitHub 上的活跃度其实不算高）对自己公司技术实力有绝对自信的，推荐用  RocketMQ，否则回去老老实实用 RabbitMQ 吧，人家有活跃的开源社区，绝 对不会黄。 </p>
+<p>所以<strong>中小型公司</strong>，技术实力较为一般，技术挑战不是特别高，用 RabbitMQ 是 不错的选择；<strong>大型公司</strong>，基础架构研发实力较强，用 RocketMQ 是很好的选 择。</p>
+<p>如果是<strong>大数据领域</strong>的实时计算、日志采集等场景，用 Kafka 是业内标准的，绝 对没问题，社区活跃度很高，绝对不会黄，何况几乎是全世界这个领域的事实性 规范。 </p>
+<h2 id="MQ-有哪些常见问题？如何解决这些问题？"><a href="#MQ-有哪些常见问题？如何解决这些问题？" class="headerlink" title="MQ 有哪些常见问题？如何解决这些问题？"></a>MQ 有哪些常见问题？如何解决这些问题？</h2><p>MQ 的常见问题有： </p>
+<ol>
+<li>消息的顺序问题 </li>
+<li>消息的重复问题</li>
+</ol>
+<p>**消息的顺序问题 **</p>
+<p>消息有序指的是可以按照消息的发送顺序来消费。 </p>
+<p>假如生产者产生了 2 条消息：M1、M2，假定 M1 发送到 S1，M2 发送到  S2，如果要保证 M1 先于 M2 被消费，怎么做？</p>
+<p><img src="/15-%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6MQ%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89.assets/%E6%B6%88%E6%81%AF%E7%9A%84%E9%A1%BA%E5%BA%8F%E9%97%AE%E9%A2%98.png" alt="消息的顺序问题"></p>
+<p>解决方案： （1）保证生产者 - MQServer - 消费者是一对一对一的关系</p>
+<p><img src="/15-%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6MQ%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89.assets/%E6%B6%88%E6%81%AF%E7%9A%84%E9%A1%BA%E5%BA%8F%E9%97%AE%E9%A2%982.png" alt="消息的顺序问题2"></p>
+<p>缺陷：</p>
+<ul>
+<li>并行度就会成为消息系统的瓶颈（吞吐量不够） </li>
+<li>更多的异常处理，比如：只要消费端出现问题，就会导致整个处理流程阻塞，我 们不得不花费更多的精力来解决阻塞的问题。（2）通过合理的设计或者将问题分解 来规避。 </li>
+<li>不关注乱序的应用实际大量存在 </li>
+<li>队列无序并不意味着消息无序 所以从业务层面来保证消息的顺序而不仅仅是依 赖于消息系统，是一种更合理的方式。</li>
+</ul>
+<p>**消息的重复问题 **</p>
+<p>造成消息重复的根本原因是：网络不可达。 </p>
+<p>所以解决这个问题的办法就是绕过这个问题。那么问题就变成了：如果消费端收 到两条一样的消息，应该怎样处理？ </p>
+<p>消费端处理消息的业务逻辑保持幂等性。只要保持幂等性，不管来多少条重复消 息，最后处理的结果都一样。保证每条消息都有唯一编号且保证消息处理成功与 去重表的日志同时出现。利用一张日志表来记录已经处理成功的消息的 ID，如 果新到的消息 ID 已经在日志表中，那么就不再处理这条消息。 </p>
+<h2 id="什么是RabbitMQ？"><a href="#什么是RabbitMQ？" class="headerlink" title="什么是RabbitMQ？"></a>什么是RabbitMQ？</h2><p>RabbitMQ是一款开源的，Erlang编写的，基于AMQP协议的消息中间件 </p>
+<h2 id="Rabbitmq-的使用场景"><a href="#Rabbitmq-的使用场景" class="headerlink" title="Rabbitmq 的使用场景"></a>Rabbitmq 的使用场景</h2><p>（1）服务间异步通信</p>
+<p>（2）顺序消费 </p>
+<p>（3）定时任务 </p>
+<p>（4）请求削峰 </p>
+<h2 id="RabbitMQ基本概念"><a href="#RabbitMQ基本概念" class="headerlink" title="RabbitMQ基本概念"></a>RabbitMQ基本概念</h2><ul>
+<li>Broker： 简单来说就是消息队列服务器实体 </li>
+<li>Exchange： 消息交换机，它指定消息按什么规则，路由到哪个队列 </li>
+<li>Queue： 消息队列载体，每个消息都会被投入到一个或多个队列 </li>
+<li>Binding： 绑定，它的作用就是把exchange和queue按照路由规则绑定起来 </li>
+<li>Routing Key： 路由关键字，exchange根据这个关键字进行消息投递 </li>
+<li>VHost： vhost 可以理解为虚拟 broker ，即 mini-RabbitMQ server。其内部 均含有独立的 queue、exchange 和 binding 等，但最最重要的是，其拥有独立的 权限系统，可以做到 vhost 范围的用户控制。当然，从 RabbitMQ 的全局角度， vhost 可以作为不同权限隔离的手段（一个典型的例子就是不同的应用可以跑在不同 的 vhost 中）。 </li>
+<li>Producer： 消息生产者，就是投递消息的程序 </li>
+<li>Consumer： 消息消费者，就是接受消息的程序 </li>
+<li>Channel： 消息通道，在客户端的每个连接里，可建立多个channel，每个 channel代表一个会话任务</li>
+</ul>
+<p>由Exchange、Queue、RoutingKey三个才能决定一个从Exchange到Queue的 唯一的线路。 </p>
+<h2 id="RabbitMQ的工作模式"><a href="#RabbitMQ的工作模式" class="headerlink" title="RabbitMQ的工作模式"></a>RabbitMQ的工作模式</h2><h3 id="一-simple模式（即最简单的收发模式）"><a href="#一-simple模式（即最简单的收发模式）" class="headerlink" title="一.simple模式（即最简单的收发模式）"></a>一.simple模式（即最简单的收发模式）</h3><p><img src="/15-%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6MQ%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89.assets/simple%E6%A8%A1%E5%BC%8F.png" alt="simple模式"></p>
+<p>1.消息产生消息，将消息放入队列 </p>
+<p>2.消息的消费者(consumer) 监听 消息队列,如果队列中有消息,就消费掉,消息被 拿走后,自动从队列中删除(隐患 消息可能没有被消费者正确处理,已经从队列中消失了,造成消息的丢失，这里可以设置成手动的ack,但如果设置成手动ack，处 理完后要及时发送ack消息给队列，否则会造成内存溢出)。 </p>
+<h3 id="二-work工作模式-资源的竞争"><a href="#二-work工作模式-资源的竞争" class="headerlink" title="二.work工作模式(资源的竞争)"></a>二.work工作模式(资源的竞争)</h3><p><img src="/15-%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6MQ%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89.assets/work%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F.png" alt="work工作模式"></p>
+<p>1.消息产生者将消息放入队列消费者可以有多个,消费者1,消费者2同时监听同一 个队列,消息被消费。C1 C2共同争抢当前的消息队列内容,谁先拿到谁负责消费 消息(隐患：高并发情况下,默认会产生某一个消息被多个消费者共同使用,可以设 置一个开关(syncronize) 保证一条消息只能被一个消费者使用)。 </p>
+<h3 id="三-publish-x2F-subscribe发布订阅-共享资源"><a href="#三-publish-x2F-subscribe发布订阅-共享资源" class="headerlink" title="三.publish&#x2F;subscribe发布订阅(共享资源)"></a>三.publish&#x2F;subscribe发布订阅(共享资源)</h3><p><img src="/15-%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6MQ%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89.assets/publish_subscribe%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85(%E5%85%B1%E4%BA%AB%E8%B5%84%E6%BA%90).png" alt="publish_subscribe发布订阅(共享资源)">1、每个消费者监听自己的队列； </p>
+<p>2、生产者将消息发给broker，由交换机将消息转发到绑定此交换机的每个队 列，每个绑定交换机的队列都将接收到消息。 </p>
+<h3 id="四-routing路由模式"><a href="#四-routing路由模式" class="headerlink" title="四.routing路由模式"></a>四.routing路由模式</h3><p><img src="/15-%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6MQ%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89.assets/routing%E8%B7%AF%E7%94%B1%E6%A8%A1%E5%BC%8F.png" alt="routing路由模式">1.消息生产者将消息发送给交换机按照路由判断,路由是字符串(info) 当前产生的 消息携带路由字符(对象的方法),交换机根据路由的key,只能匹配上路由key对应的消息队列,对应的消费者才能消费消息; </p>
+<p>2.根据业务功能定义路由字符串 </p>
+<p>3.从系统的代码逻辑中获取对应的功能字符串,将消息任务扔到对应的队列中。</p>
+<p>4.业务场景:error 通知;EXCEPTION;错误通知的功能;传统意义的错误通知;客户 通知;利用key路由,可以将程序中的错误封装成消息传入到消息队列中,开发者可 以自定义消费者,实时接收错误;</p>
+<h3 id="五-topic-主题模式-路由模式的一种"><a href="#五-topic-主题模式-路由模式的一种" class="headerlink" title="五.topic 主题模式(路由模式的一种)"></a>五.topic 主题模式(路由模式的一种)</h3><p>![topic 主题模式(路由模式的一种)](15-消息中间件MQ面试题（2020最新版）.assets&#x2F;topic 主题模式(路由模式的一种).png)<br>1.星号井号代表通配符 </p>
+<p>2.星号代表多个单词,井号代表一个单词 </p>
+<p>3.路由功能添加模糊匹配 </p>
+<p>4.消息产生者产生消息,把消息交给交换机 </p>
+<p>5.交换机根据key的规则模糊匹配到对应的队列,由队列的监听消费者接收消息消 费 </p>
+<p>（在我的理解看来就是routing查询的一种模糊匹配，就类似sql的模糊查询方 式） </p>
+<h2 id="如何保证RabbitMQ消息的顺序性？"><a href="#如何保证RabbitMQ消息的顺序性？" class="headerlink" title="如何保证RabbitMQ消息的顺序性？"></a>如何保证RabbitMQ消息的顺序性？</h2><p>拆分多个 queue，每个 queue 一个 consumer，就是多一些 queue 而已，确 实是麻烦点；或者就一个 queue 但是对应一个 consumer，然后这个  consumer 内部用内存队列做排队，然后分发给底层不同的 worker 来处理。 </p>
+<h1 id="消息如何分发？"><a href="#消息如何分发？" class="headerlink" title="消息如何分发？"></a>消息如何分发？</h1><p>若该队列至少有一个消费者订阅，消息将以循环（round-robin）的方式发送给消费者。每条消息只会分发给一个订阅的消费者（前提是消费者能够正常处理消息并进行确认）。通过路由可实现多消费的功能</p>
+<h1 id="消息怎么路由？"><a href="#消息怎么路由？" class="headerlink" title="消息怎么路由？"></a>消息怎么路由？</h1><p>消息提供方-&gt;路由-&gt;一至多个队列消息发布到交换器时，消息将拥有一个路由键（routing key），在消息创建时设定。通过队列路由键，可以把队列绑定到交换器上。消息到达交换器后，RabbitMQ 会将消息的路由键与队列的路由键进行匹配（针对不同的交换器有不同的路由规则）；常用的交换器主要分为一下三种： fanout：如果交换器收到消息，将会广播到所有绑定的队列上 direct：如果路由键完全匹配，消息就被投递到相应的队列</p>
+<p>topic：可以使来自不同源头的消息能够到达同一个队列。 使用 topic 交换器时，可以使用通配符</p>
+<h1 id="消息基于什么传输？"><a href="#消息基于什么传输？" class="headerlink" title="消息基于什么传输？"></a>消息基于什么传输？</h1><p>由于 TCP 连接的创建和销毁开销较大，且并发数受系统资源限制，会造成性能瓶颈。RabbitMQ 使用信道的方式来传输数据。信道是建立在真实的 TCP 连接内的虚拟连接，且每条 TCP 连接上的信道数量没有限制。</p>
+<h1 id="如何保证消息不被重复消费？或者说，如何保证消息消费时的幂等性？"><a href="#如何保证消息不被重复消费？或者说，如何保证消息消费时的幂等性？" class="headerlink" title="如何保证消息不被重复消费？或者说，如何保证消息消费时的幂等性？"></a>如何保证消息不被重复消费？或者说，如何保证消息消费时的幂等性？</h1><p>先说为什么会重复消费：正常情况下，消费者在消费消息的时候，消费完毕后，会发送一个确认消息给消息队列，消息队列就知道该消息被消费了，就会将该消息从消息队列中删除；但是因为网络传输等等故障，确认信息没有传送到消息队列，导致消息队列不知道自己已经消费过该消息了，再次将消息分发给其他的消费者。</p>
+<p>针对以上问题，一个解决思路是：保证消息的唯一性，就算是多次传输，不要让消息的多次消费带来影响；保证消息等幂性；比如：在写入消息队列的数据做唯一标示，消费消息时，根据唯一标识判断是否消费过；假设你有个系统，消费一条消息就往数据库里插入一条数据，要是你一个消息重复两次，你不就插入了两条，这数据不就错了？但是你要是消费到第二次的时据，从而保证了数据的正确性。</p>
+<h1 id="候，自己判断一下是否已经消费过了，若是就直接扔了，这样不就保留了一条数如何确保消息正确地发送至-RabbitMQ？-如何确保消息接收方消费了消息？"><a href="#候，自己判断一下是否已经消费过了，若是就直接扔了，这样不就保留了一条数如何确保消息正确地发送至-RabbitMQ？-如何确保消息接收方消费了消息？" class="headerlink" title="候，自己判断一下是否已经消费过了，若是就直接扔了，这样不就保留了一条数如何确保消息正确地发送至 RabbitMQ？ 如何确保消息接收方消费了消息？"></a>候，自己判断一下是否已经消费过了，若是就直接扔了，这样不就保留了一条数如何确保消息正确地发送至 RabbitMQ？ 如何确保消息接收方消费了消息？</h1><p>发送方确认模式将信道设置成 confirm 模式（发送方确认模式），则所有在信道上发布的消息都会被指派一个唯一的 ID。</p>
+<p>一旦消息被投递到目的队列后，或者消息被写入磁盘后（可持久化的消息），信道会发送一个确认给生产者（包含消息唯一 ID）。</p>
+<p>如果 RabbitMQ 发生内部错误从而导致消息丢失，会发送一条 nack（notacknowledged，未确认）消息。</p>
+<p>发送方确认模式是异步的，生产者应用程序在等待确认的同时，可以继续发送消息。当确认消息到达生产者应用程序，生产者应用程序的回调方法就会被触发来处理确认消息。接收方确认机制消费者接收每一条消息后都必须进行确认（消息接收和消息确认是两个不同操作）。只有消费者确认了消息，RabbitMQ 才能安全地把消息从队列中删除。</p>
+<p>这里并没有用到超时机制，RabbitMQ 仅通过 Consumer 的连接中断来确认是否需要重新发送消息。也就是说，只要连接不中断，RabbitMQ 给了 </p>
+<p>Consumer 足够长的时间来处理消息。保证数据的最终一致性；下面罗列几种特殊情况</p>
+<ul>
+<li>如果消费者接收到消息，在确认之前断开了连接或取消订阅，RabbitMQ 会认为消息没有被分发，然后重新分发给下一个订阅的消费者。（可能存在消息重复消费的隐患，需要去重）</li>
+<li>如果消费者接收到消息却没有确认消息，连接也未断开，则 RabbitMQ 认为该消费者繁忙，将不会给该消费者分发更多的消息。</li>
+</ul>
+<h1 id="如何保证RabbitMQ消息的可靠传输？"><a href="#如何保证RabbitMQ消息的可靠传输？" class="headerlink" title="如何保证RabbitMQ消息的可靠传输？"></a>如何保证RabbitMQ消息的可靠传输？</h1><p>消息不可靠的情况可能是消息丢失，劫持等原因；丢失又分为：生产者丢失消息、消息列表丢失消息、消费者丢失消息；生产者丢失消息：从生产者弄丢数据这个角度来看，RabbitMQ提供 transaction和confirm模式来确保生产者不丢消息；</p>
+<p>transaction机制就是说：发送消息前，开启事务（channel.txSelect()）,然后发送消息，如果发送过程中出现什么异常，事务就会回滚</p>
+<p>（channel.txRollback()）,如果发送成功则提交事务</p>
+<p>（channel.txCommit()）。然而，这种方式有个缺点：吞吐量下降；</p>
+<p>confirm模式用的居多：一旦channel进入confirm模式，所有在该信道上发布的消息都将会被指派一个唯一的ID（从1开始），一旦消息被投递到所有匹配的队列之后；</p>
+<p>rabbitMQ就会发送一个ACK给生产者（包含消息的唯一ID），这就使得生产者知道消息已经正确到达目的队列了；</p>
+<p>如果rabbitMQ没能处理该消息，则会发送一个Nack消息给你，你可以进行重试操作。</p>
+<p>消息队列丢数据：消息持久化。</p>
+<p>处理消息队列丢数据的情况，一般是开启持久化磁盘的配置。</p>
+<p>这个持久化配置可以和confirm机制配合使用，你可以在消息持久化磁盘后，再给生产者发送一个Ack信号。</p>
+<p>这样，如果消息持久化磁盘之前，rabbitMQ阵亡了，那么生产者收不到Ack信号，生产者会自动重发。</p>
+<p>那么如何持久化呢？</p>
+<p>这里顺便说一下吧，其实也很容易，就下面两步</p>
+<p>\1. 将queue的持久化标识durable设置为true,则代表是一个持久的队列</p>
+<p>\2. 发送消息的时候将deliveryMode&#x3D;2</p>
+<p>这样设置以后，即使rabbitMQ挂了，重启后也能恢复数据消费者丢失消息：消费者丢数据一般是因为采用了自动确认消息模式，改为手动确认消息即可！消费者在收到消息之后，处理消息之前，会自动回复RabbitMQ已收到消息；如果这时处理消息失败，就会丢失该消息；解决方案：处理消息成功后，手动回复确认消息。</p>
+<h1 id="为什么不应该对所有的-message-都使用持久化机制？"><a href="#为什么不应该对所有的-message-都使用持久化机制？" class="headerlink" title="为什么不应该对所有的 message 都使用持久化机制？"></a>为什么不应该对所有的 message 都使用持久化机制？</h1><p>首先，必然导致性能的下降，因为写磁盘比写 RAM 慢的多，message 的吞吐量可能有 10 倍的差距。</p>
+<p>其次，message 的持久化机制用在 RabbitMQ 的内置 cluster 方案时会出现“坑爹”问题。矛盾点在于，若 message 设置了 persistent 属性，但 queue 未设置 durable 属性，那么当该 queue 的 owner node 出现异常后，在未重建该 queue 前，发往该 queue 的 message 将被 blackholed ；若 message 设置了 persistent 属性，同时 queue 也设置了 durable 属性，那么当 queue 的 owner node 异常且无法重启的情况下，则该 queue 无法在其他 node 上重建，只能等待其 owner node 重启后，才能恢复该 queue 的使用，而在这段时间内发送给该 queue 的 message 将被 blackholed 。</p>
+<p>所以，是否要对 message 进行持久化，需要综合考虑性能需要，以及可能遇到的问题。若想达到 100,000 条&#x2F;秒以上的消息吞吐量（单 RabbitMQ 服务</p>
+<p>器），则要么使用其他的方式来确保 message 的可靠 delivery ，要么使用非常快速的存储系统以支持全持久化（例如使用 SSD）。另外一种处理原则是：</p>
+<p>仅对关键消息作持久化处理（根据业务重要程度），且应该保证关键消息的量不会导致性能瓶颈。</p>
+<h1 id="如何保证高可用的？RabbitMQ-的集群"><a href="#如何保证高可用的？RabbitMQ-的集群" class="headerlink" title="如何保证高可用的？RabbitMQ 的集群"></a>如何保证高可用的？RabbitMQ 的集群</h1><p>RabbitMQ 是比较有代表性的，因为是基于主从（非分布式）做高可用性的，</p>
+<p>我们就以 RabbitMQ 为例子讲解第一种 MQ 的高可用性怎么实现。RabbitMQ 有三种模式：单机模式、普通集群模式、镜像集群模式。</p>
+<p>单机模式，就是 Demo 级别的，一般就是你本地启动了玩玩儿的?，没人生产用单机模式普通集群模式，意思就是在多台机器上启动多个 RabbitMQ 实例，每个机器启动一个。你创建的 queue，只会放在一个 RabbitMQ 实例上，但是每个实例都同步 queue 的元数据（元数据可以认为是 queue 的一些配置信息，通过元数据，可以找到 queue 所在实例）。你消费的时候，实际上如果连接到了另外一个实例，那么那个实例会从 queue 所在实例上拉取数据过来。这方案主要是提高吞吐量的，就是说让集群中多个节点来服务某个 queue 的读写操作。</p>
+<p>镜像集群模式：这种模式，才是所谓的 RabbitMQ 的高可用模式。跟普通集群模式不一样的是，在镜像集群模式下，你创建的 queue，无论元数据还是 queue 里的消息都会存在于多个实例上，就是说，每个 RabbitMQ 节点都有这个 queue 的一个完整镜像，包含 queue 的全部数据的意思。然后每次你写消息到 queue 的时候，都会自动把消息同步到多个实例的 queue 上。</p>
+<p>RabbitMQ 有很好的管理控制台，就是在后台新增一个策略，这个策略是镜像集群模式的策略，指定的时候是可以要求数据同步到所有节点的，也可以要求同步到指定数量的节点，再次创建 queue 的时候，应用这个策略，就会自动将数据同步到其他的节点上去了。这样的话，好处在于，你任何一个机器宕机了，没事儿，其它机器（节点）还包含了这个 queue 的完整数据，别的 consumer 都可以到其它节点上去消费数据。坏处在于，第一，这个性能开销也太大了吧，消息需要同步到所有机器上，导致网络带宽压力和消耗很重！RabbitMQ 一个 queue 的数据都是放在一个节点里的，镜像集群下，也是每个节点都放这个queue 的完整数据。 </p>
+<p>如何解决消息队列的延时以及过期失效问题？消息队列满了以后该怎么处理？有几百万消息持续积压几小时，说说怎么解决？</p>
+<p>消息积压处理办法：临时紧急扩容：</p>
+<p>先修复 consumer 的问题，确保其恢复消费速度，然后将现有 cnosumer 都停掉。</p>
+<p>新建一个 topic，partition 是原来的 10 倍，临时建立好原先 10 倍的 queue 数量。</p>
+<p>然后写一个临时的分发数据的 consumer 程序，这个程序部署上去消费积压的</p>
+<p>数据，消费之后不做耗时的处理，直接均匀轮询写入临时建立好的 10 倍数量的 queue。</p>
+<p>接着临时征用 10 倍的机器来部署 consumer，每一批 consumer 消费一个临时 queue 的数据。这种做法相当于是临时将 queue 资源和 consumer 资源扩大 10 倍，以正常的 10 倍速度来消费数据。</p>
+<p>等快速消费完积压数据之后，得恢复原先部署的架构，重新用原先的 consumer 机器来消费消息。</p>
+<p>MQ中消息失效：假设你用的是 RabbitMQ，RabbtiMQ 是可以设置过期时间</p>
+<p>的，也就是 TTL。如果消息在 queue 中积压超过一定的时间就会被 RabbitMQ 给清理掉，这个数据就没了。那这就是第二个坑了。这就不是说数据会大量积压在 mq 里，而是大量的数据会直接搞丢。我们可以采取一个方案，就是批量重导，这个我们之前线上也有类似的场景干过。就是大量积压的时候，我们当时就直接丢弃数据了，然后等过了高峰期以后，比如大家一起喝咖啡熬夜到晚上12 点以后，用户都睡觉了。这个时候我们就开始写程序，将丢失的那批数据，写个临时程序，一点一点的查出来，然后重新灌入 mq 里面去，把白天丢的数据给他补回来。也只能是这样了。假设 1 万个订单积压在 mq 里面，没有处理，其中 1000 个订单都丢了，你只能手动写程序把那 1000 个订单给查出来，手动发到 mq 里去再补一次。</p>
+<p>mq消息队列块满了：如果消息积压在 mq 里，你很长时间都没有处理掉，此时导致 mq 都快写满了，咋办？这个还有别的办法吗？没有，谁让你第一个方案执行的太慢了，你临时写程序，接入数据来消费，消费一个丢弃一个，都不要</p>
+<p>了，快速消费掉所有的消息。然后走第二个方案，到了晚上再补数据吧。</p>
+<h1 id="设计MQ思路"><a href="#设计MQ思路" class="headerlink" title="设计MQ思路"></a>设计MQ思路</h1><p>比如说这个消息队列系统，我们从以下几个角度来考虑一下：首先这个 mq 得支持可伸缩性吧，就是需要的时候快速扩容，就可以增加吞吐量和容量，那怎么搞？设计个分布式的系统呗，参照一下 kafka 的设计理念，</p>
+<p>broker -&gt; topic -&gt; partition，每个 partition 放一个机器，就存一部分数据。</p>
+<p>如果现在资源不够了，简单啊，给 topic 增加 partition，然后做数据迁移，增加机器，不就可以存放更多数据，提供更高的吞吐量了？其次你得考虑一下这个 mq 的数据要不要落地磁盘吧？那肯定要了，落磁盘才能保证别进程挂了数据就丢了。那落磁盘的时候怎么落啊？顺序写，这样就没有</p>
+<p>磁盘随机读写的寻址开销，磁盘顺序读写的性能是很高的，这就是 kafka 的思路。</p>
+<p>其次你考虑一下你的 mq 的可用性啊？这个事儿，具体参考之前可用性那个环节讲解的 kafka 的高可用保障机制。多副本 -&gt; leader &amp; follower -&gt; broker 挂了重新选举 leader 即可对外服务。</p>
+<p>能不能支持数据 0 丢失啊？可以的，参考我们之前说的那个 kafka 数据零丢失方案。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Muise</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.muise.tk/2022/04/27/15-%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6MQ%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89/">https://blog.muise.tk/2022/04/27/15-%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6MQ%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.muise.tk" target="_blank">Muise</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2020/12/10/6U2CcwkzxjRtrNV.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/04/27/16-Netty%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89/"><img class="prev-cover" src="https://i.loli.net/2020/12/10/HdV7SIDezXy1a4w.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info"></div></div></a></div><div class="next-post pull-right"><a href="/2022/04/27/14-Dubbo%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89/"><img class="next-cover" src="https://i.loli.net/2020/12/10/OgzWZnrSN4CDEQ3.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info"></div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://blog.muise.tk/img/favicon.png" onerror="this.onerror=null;this.src='/img/favicon.png'" alt="avatar"/></div><div class="author-info__name">Muise</div><div class="author-info__description"></div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div></div><a id="card-info-btn" href="https://blog.muise.tk"><i class="fa fa-bookmark"></i><span>点它 点它</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/junsijia" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:liu1989047@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">自觉此心无一事，小鱼跳出绿萍中。</div></div><div class="xpand" style="height:200px;"><canvas class="illo" width="800" height="800" style="max-width: 200px; max-height: 200px; touch-action: none; width: 640px; height: 640px;"></canvas></div><script src="https://cdn.jsdelivr.net/gh/xiaopengand/blogCdn@latest/xzxr/twopeople1.js"></script><script src="https://cdn.jsdelivr.net/gh/xiaopengand/blogCdn@latest/xzxr/zdog.dist.js"></script><script id="rendered-js" src="https://cdn.jsdelivr.net/gh/xiaopengand/blogCdn@latest/xzxr/twopeople.js"></script><style>.card-widget.card-announcement {
+margin: 0;
+align-items: center;
+justify-content: center;
+text-align: center;
+}
+canvas {
+display: block;
+margin: 0 auto;
+cursor: move;
+}</style></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8MQ%EF%BC%9FMQ%E7%9A%84%E4%BC%98%E7%82%B9"><span class="toc-number">1.</span> <span class="toc-text">为什么使用MQ？MQ的优点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E7%AD%94"><span class="toc-number">1.1.</span> <span class="toc-text">简答</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%A6%E7%AD%94"><span class="toc-number">1.2.</span> <span class="toc-text">详答</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E6%9C%89%E4%BB%80%E4%B9%88%E4%BC%98%E7%BC%BA%E7%82%B9%EF%BC%9FRabbitMQ%E6%9C%89%E4%BB%80%E4%B9%88%E4%BC%98%E7%BC%BA%E7%82%B9%EF%BC%9F"><span class="toc-number">2.</span> <span class="toc-text">消息队列有什么优缺点？RabbitMQ有什么优缺点？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%A0%E4%BB%AC%E5%85%AC%E5%8F%B8%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E7%94%A8%E7%9A%84%E6%98%AF%E4%BB%80%E4%B9%88%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6%EF%BC%9F"><span class="toc-number">3.</span> <span class="toc-text">你们公司生产环境用的是什么消息中间件？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Kafka%E3%80%81ActiveMQ%E3%80%81RabbitMQ%E3%80%81RocketMQ-%E6%9C%89-%E4%BB%80%E4%B9%88%E4%BC%98%E7%BC%BA%E7%82%B9%EF%BC%9F"><span class="toc-number">4.</span> <span class="toc-text">Kafka、ActiveMQ、RabbitMQ、RocketMQ 有 什么优缺点？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MQ-%E6%9C%89%E5%93%AA%E4%BA%9B%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%EF%BC%9F%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E8%BF%99%E4%BA%9B%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">MQ 有哪些常见问题？如何解决这些问题？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFRabbitMQ%EF%BC%9F"><span class="toc-number">6.</span> <span class="toc-text">什么是RabbitMQ？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Rabbitmq-%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">7.</span> <span class="toc-text">Rabbitmq 的使用场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RabbitMQ%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">8.</span> <span class="toc-text">RabbitMQ基本概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RabbitMQ%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F"><span class="toc-number">9.</span> <span class="toc-text">RabbitMQ的工作模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80-simple%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%8D%B3%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84%E6%94%B6%E5%8F%91%E6%A8%A1%E5%BC%8F%EF%BC%89"><span class="toc-number">9.1.</span> <span class="toc-text">一.simple模式（即最简单的收发模式）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C-work%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F-%E8%B5%84%E6%BA%90%E7%9A%84%E7%AB%9E%E4%BA%89"><span class="toc-number">9.2.</span> <span class="toc-text">二.work工作模式(资源的竞争)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89-publish-x2F-subscribe%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85-%E5%85%B1%E4%BA%AB%E8%B5%84%E6%BA%90"><span class="toc-number">9.3.</span> <span class="toc-text">三.publish&#x2F;subscribe发布订阅(共享资源)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B-routing%E8%B7%AF%E7%94%B1%E6%A8%A1%E5%BC%8F"><span class="toc-number">9.4.</span> <span class="toc-text">四.routing路由模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%94-topic-%E4%B8%BB%E9%A2%98%E6%A8%A1%E5%BC%8F-%E8%B7%AF%E7%94%B1%E6%A8%A1%E5%BC%8F%E7%9A%84%E4%B8%80%E7%A7%8D"><span class="toc-number">9.5.</span> <span class="toc-text">五.topic 主题模式(路由模式的一种)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81RabbitMQ%E6%B6%88%E6%81%AF%E7%9A%84%E9%A1%BA%E5%BA%8F%E6%80%A7%EF%BC%9F"><span class="toc-number">10.</span> <span class="toc-text">如何保证RabbitMQ消息的顺序性？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E5%A6%82%E4%BD%95%E5%88%86%E5%8F%91%EF%BC%9F"><span class="toc-number"></span> <span class="toc-text">消息如何分发？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E6%80%8E%E4%B9%88%E8%B7%AF%E7%94%B1%EF%BC%9F"><span class="toc-number"></span> <span class="toc-text">消息怎么路由？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B6%88%E6%81%AF%E5%9F%BA%E4%BA%8E%E4%BB%80%E4%B9%88%E4%BC%A0%E8%BE%93%EF%BC%9F"><span class="toc-number"></span> <span class="toc-text">消息基于什么传输？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E6%B6%88%E6%81%AF%E4%B8%8D%E8%A2%AB%E9%87%8D%E5%A4%8D%E6%B6%88%E8%B4%B9%EF%BC%9F%E6%88%96%E8%80%85%E8%AF%B4%EF%BC%8C%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E6%B6%88%E6%81%AF%E6%B6%88%E8%B4%B9%E6%97%B6%E7%9A%84%E5%B9%82%E7%AD%89%E6%80%A7%EF%BC%9F"><span class="toc-number"></span> <span class="toc-text">如何保证消息不被重复消费？或者说，如何保证消息消费时的幂等性？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%80%99%EF%BC%8C%E8%87%AA%E5%B7%B1%E5%88%A4%E6%96%AD%E4%B8%80%E4%B8%8B%E6%98%AF%E5%90%A6%E5%B7%B2%E7%BB%8F%E6%B6%88%E8%B4%B9%E8%BF%87%E4%BA%86%EF%BC%8C%E8%8B%A5%E6%98%AF%E5%B0%B1%E7%9B%B4%E6%8E%A5%E6%89%94%E4%BA%86%EF%BC%8C%E8%BF%99%E6%A0%B7%E4%B8%8D%E5%B0%B1%E4%BF%9D%E7%95%99%E4%BA%86%E4%B8%80%E6%9D%A1%E6%95%B0%E5%A6%82%E4%BD%95%E7%A1%AE%E4%BF%9D%E6%B6%88%E6%81%AF%E6%AD%A3%E7%A1%AE%E5%9C%B0%E5%8F%91%E9%80%81%E8%87%B3-RabbitMQ%EF%BC%9F-%E5%A6%82%E4%BD%95%E7%A1%AE%E4%BF%9D%E6%B6%88%E6%81%AF%E6%8E%A5%E6%94%B6%E6%96%B9%E6%B6%88%E8%B4%B9%E4%BA%86%E6%B6%88%E6%81%AF%EF%BC%9F"><span class="toc-number"></span> <span class="toc-text">候，自己判断一下是否已经消费过了，若是就直接扔了，这样不就保留了一条数如何确保消息正确地发送至 RabbitMQ？ 如何确保消息接收方消费了消息？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81RabbitMQ%E6%B6%88%E6%81%AF%E7%9A%84%E5%8F%AF%E9%9D%A0%E4%BC%A0%E8%BE%93%EF%BC%9F"><span class="toc-number"></span> <span class="toc-text">如何保证RabbitMQ消息的可靠传输？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%BA%94%E8%AF%A5%E5%AF%B9%E6%89%80%E6%9C%89%E7%9A%84-message-%E9%83%BD%E4%BD%BF%E7%94%A8%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6%EF%BC%9F"><span class="toc-number"></span> <span class="toc-text">为什么不应该对所有的 message 都使用持久化机制？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E9%AB%98%E5%8F%AF%E7%94%A8%E7%9A%84%EF%BC%9FRabbitMQ-%E7%9A%84%E9%9B%86%E7%BE%A4"><span class="toc-number"></span> <span class="toc-text">如何保证高可用的？RabbitMQ 的集群</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1MQ%E6%80%9D%E8%B7%AF"><span class="toc-number"></span> <span class="toc-text">设计MQ思路</span></a></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/04/27/03-Java%E5%BC%82%E5%B8%B8%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89/" title="无题"><img src="https://i.loli.net/2020/12/10/ZsW3yG2qx5loJNv.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无题"/></a><div class="content"><a class="title" href="/2022/04/27/03-Java%E5%BC%82%E5%B8%B8%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89/" title="无题">无题</a><time datetime="2022-04-26T16:22:24.405Z" title="发表于 2022-04-27 00:22:24">2022-04-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/04/27/02-Java%E9%9B%86%E5%90%88%E5%AE%B9%E5%99%A8%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89-%E9%87%8D%E7%82%B9/" title="无题"><img src="https://i.loli.net/2020/12/10/kxQpSW8HX9sbvne.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无题"/></a><div class="content"><a class="title" href="/2022/04/27/02-Java%E9%9B%86%E5%90%88%E5%AE%B9%E5%99%A8%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89-%E9%87%8D%E7%82%B9/" title="无题">无题</a><time datetime="2022-04-26T16:22:24.403Z" title="发表于 2022-04-27 00:22:24">2022-04-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/04/27/01-Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89/" title="Java基础知识面试题"><img src="https://i.loli.net/2020/12/10/2t4XKc6hpgxYLN1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Java基础知识面试题"/></a><div class="content"><a class="title" href="/2022/04/27/01-Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89/" title="Java基础知识面试题">Java基础知识面试题</a><time datetime="2022-04-26T16:22:24.402Z" title="发表于 2022-04-27 00:22:24">2022-04-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/04/27/22-23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%80%BB%E7%BB%93%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89/" title="无题"><img src="https://i.loli.net/2020/12/10/jI1Rwkn8d2Cz54W.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无题"/></a><div class="content"><a class="title" href="/2022/04/27/22-23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%80%BB%E7%BB%93%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89/" title="无题">无题</a><time datetime="2022-04-26T16:22:23.225Z" title="发表于 2022-04-27 00:22:23">2022-04-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/04/27/21-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89-%E9%87%8D%E7%82%B9/" title="无题"><img src="https://i.loli.net/2020/12/10/ETr1LyXZuOn4YvW.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无题"/></a><div class="content"><a class="title" href="/2022/04/27/21-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89-%E9%87%8D%E7%82%B9/" title="无题">无题</a><time datetime="2022-04-26T16:22:23.223Z" title="发表于 2022-04-27 00:22:23">2022-04-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://i.loli.net/2020/12/10/6U2CcwkzxjRtrNV.jpg')"><div id="footer-wrap"></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">簡</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><div class="js-pjax"><script src="https://cdn.jsdelivr.net/gh/xiaopengand/blogCdn@latest/Valine.min.js"></script><script>var requestSetting = function (from,set) {
+  var from = from
+  var setting = set.split(',').filter(function(item){
+  return from.indexOf(item) > -1
+  });
+  setting = setting.length == 0 ? from :setting;
+  return setting
+}
+
+var guestInfo = requestSetting(['nick','mail','link'],'nick,mail,link')
+var requiredFields = requestSetting(['nick','mail','link'],'nick,mail')
+let friends = ''.split(',')
+let master = ''.split(',')
+let tagMeta = '博主,小伙伴,访客'.split(',')
+
+function loadValine () {
+  function initValine () {
+    window.valine = new Valine({
+      el: '#vcomment',
+      appId: 'n2ky955cEwmG2fXTPR2brhV8-gzGzoHsz',
+      appKey: 'j9yWSwEobTaIXHFl6TUDfDqU',
+      placeholder: '📌月亮很亮，亮也没用，没用也亮。我在想你，想你没用，没用也想📌',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: {"bilibili_罗小黑_自来水":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_自来水.png","bilibili_罗小黑_真棒":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_真棒.png","bilibili_罗小黑_找彩蛋":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_找彩蛋.png","bilibili_罗小黑_歪在吗":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_歪在吗.png","bilibili_罗小黑_撒花":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_撒花.png","bilibili_罗小黑_求包养":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_求包养.png","bilibili_罗小黑_你好呀":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_你好呀.png","bilibili_罗小黑_来了":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_来了.png","bilibili_罗小黑_可可爱爱":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_可可爱爱.png","bilibili_罗小黑_看电影":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_看电影.png","bilibili_罗小黑_加油":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_加油.png","bilibili_罗小黑_嗨":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_嗨.png","bilibili_罗小黑_鼓掌":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_鼓掌.png","bilibili_罗小黑_干杯":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_干杯.png","bilibili_罗小黑_大麦":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_大麦.png","bilibili_罗小黑_吃瓜":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_吃瓜.png","酷安_coolapk_emotion_1021":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_1021.png","酷安_coolapk_emotion_1020":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_1020.png","酷安_coolapk_emotion_1019":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_1019.png","酷安_coolapk_emotion_1018":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_1018.png","酷安_coolapk_emotion_1017":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_1017.png","酷安_coolapk_emotion_1016":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_1016.png","酷安_coolapk_emotion_1015":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_1015.png","酷安_coolapk_emotion_1014":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_1014.png","酷安_coolapk_emotion_1013":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_1013.png","酷安_coolapk_emotion_1012":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_1012.png","酷安_coolapk_emotion_1011":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_1011.png","酷安_coolapk_emotion_1010":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_1010.png","酷安_coolapk_emotion_109":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_109.png","酷安_coolapk_emotion_108":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_108.png","酷安_coolapk_emotion_107":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_107.png","酷安_coolapk_emotion_106":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_106.png","酷安_coolapk_emotion_105":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_105.png","酷安_coolapk_emotion_104":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_104.png","酷安_coolapk_emotion_103_nb":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_103_nb.png","酷安_coolapk_emotion_102_fadai":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_102_fadai.png","酷安_coolapk_emotion_101_pyjiaoyi":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_101_pyjiaoyi.png","酷安_coolapk_emotion_100_qqdoge":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_100_qqdoge.png","酷安_coolapk_emotion_99_zhoumei":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_99_zhoumei.png","酷安_coolapk_emotion_98_wunai":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_98_wunai.png","酷安_coolapk_emotion_97_haixiu":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_97_haixiu.png","酷安_coolapk_emotion_96_kuanlvmao":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_96_kuanlvmao.png","酷安_coolapk_emotion_95_erhading":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_95_erhading.png","酷安_coolapk_emotion_94":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_94.png","酷安_coolapk_emotion_93":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_93.png","酷安_coolapk_emotion_92":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_92.png","酷安_coolapk_emotion_91":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_91.png","酷安_coolapk_emotion_90":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_90.png","酷安_coolapk_emotion_89":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_89.png","酷安_coolapk_emotion_88":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_88.png","酷安_coolapk_emotion_87":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_87.png","酷安_coolapk_emotion_86":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_86.png","酷安_coolapk_emotion_85":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_85.png","酷安_coolapk_emotion_84_baiyan":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_84_baiyan.png","酷安_coolapk_emotion_83_huoba":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_83_huoba.png","酷安_coolapk_emotion_82_miaomiao":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_82_miaomiao.png","酷安_coolapk_emotion_81_naikezui":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_81_naikezui.png","酷安_coolapk_emotion_80":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_80.png","酷安_coolapk_emotion_79":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_79.png","酷安_coolapk_emotion_78":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_78.png","酷安_coolapk_emotion_77":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_77.png","酷安_coolapk_emotion_76":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_76.png","酷安_coolapk_emotion_75":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_75.png","酷安_coolapk_emotion_74":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_74.png","酷安_coolapk_emotion_73":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_73.png","酷安_coolapk_emotion_72":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_72.png","酷安_coolapk_emotion_71":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_71.png","酷安_coolapk_emotion_70":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_70.png","酷安_coolapk_emotion_69":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_69.png","酷安_coolapk_emotion_68":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_68.png","酷安_coolapk_emotion_67_mojinghuaji":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_67_mojinghuaji.png","酷安_coolapk_emotion_66_doujiyanhuaji":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_66_doujiyanhuaji.png","酷安_coolapk_emotion_65_coshuaji":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_65_coshuaji.png","酷安_coolapk_emotion_64_shounuehuaji":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_64_shounuehuaji.png","酷安_coolapk_emotion_63_liuhanhuaji":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_63_liuhanhuaji.png","酷安_coolapk_emotion_62_huaji":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_62_huaji.png","酷安_coolapk_emotion_61_lvmao":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_61_lvmao.png","酷安_coolapk_emotion_60_kuan":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_60_kuan.png","酷安_coolapk_emotion_59_erha":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_59_erha.png","酷安_coolapk_emotion_58_dogeyuanliangta":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_58_dogeyuanliangta.png","酷安_coolapk_emotion_57_dogehechi":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_57_dogehechi.png","酷安_coolapk_emotion_56_dogexiaoku":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_56_dogexiaoku.png","酷安_coolapk_emotion_55_lvyaowan":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_55_lvyaowan.png","酷安_coolapk_emotion_54_hongyaowan":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_54_hongyaowan.png","酷安_coolapk_emotion_53_pu":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_53_pu.png","酷安_coolapk_emotion_52_hejiu":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_52_hejiu.png","酷安_coolapk_emotion_51_chigua":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_51_chigua.png","酷安_coolapk_emotion_50_xinsui":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_50_xinsui.png","酷安_coolapk_emotion_49_huanhu":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_49_huanhu.png","酷安_coolapk_emotion_48_weiweiyixiao":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_48_weiweiyixiao.png","酷安_coolapk_emotion_47_weiqu":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_47_weiqu.png","酷安_coolapk_emotion_46_nanguo":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_46_nanguo.png","酷安_coolapk_emotion_45_yinxian":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_45_yinxian.png","酷安_coolapk_emotion_44_pen":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_44_pen.png","酷安_coolapk_emotion_43_heixian":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_43_heixian.png","酷安_coolapk_emotion_42_diaoxie":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_42_diaoxie.png","酷安_coolapk_emotion_41_meigui":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_41_meigui.png","酷安_coolapk_emotion_40_aixin":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_40_aixin.png","酷安_coolapk_emotion_39_caidao":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_39_caidao.png","酷安_coolapk_emotion_38_wozuimei":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_38_wozuimei.png","酷安_coolapk_emotion_37_doge":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_37_doge.png","酷安_coolapk_emotion_36_ku":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_36_ku.png","酷安_coolapk_emotion_35_ye":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_35_ye.png","酷安_coolapk_emotion_34_jizhi":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_34_jizhi.png","酷安_coolapk_emotion_33_wulian":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_33_wulian.png","酷安_coolapk_emotion_32_heiha":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_32_heiha.png","酷安_coolapk_emotion_31_xiaoku":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_31_xiaoku.png","酷安_coolapk_emotion_30_ok":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_30_ok.png","酷安_coolapk_emotion_29_baoquan":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_29_baoquan.png","酷安_coolapk_emotion_28_ruo":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_28_ruo.png","酷安_coolapk_emotion_27_qiang":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_27_qiang.png","酷安_coolapk_emotion_26_kelian":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_26_kelian.png","酷安_coolapk_emotion_25_zaijian":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_25_zaijian.png","酷安_coolapk_emotion_24_wuzuixiao":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_24_wuzuixiao.png","酷安_coolapk_emotion_23_shui":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_23_shui.png","酷安_coolapk_emotion_22_xiaoyan":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_22_xiaoyan.png","酷安_coolapk_emotion_21_penxue":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_21_penxue.png","酷安_coolapk_emotion_20_qinqin":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_20_qinqin.png","酷安_coolapk_emotion_19_koubi":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_19_koubi.png","酷安_coolapk_emotion_18_han":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_18_han.png","酷安_coolapk_emotion_17_tushe":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_17_tushe.png","酷安_coolapk_emotion_16_tuosai":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_16_tuosai.png","酷安_coolapk_emotion_15_fanu":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_15_fanu.png","酷安_coolapk_emotion_14_bishi":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_14_bishi.png","酷安_coolapk_emotion_13_huaixiao":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_13_huaixiao.png","酷安_coolapk_emotion_12_wuyu":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_12_wuyu.png","酷安_coolapk_emotion_11_yiwen":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_11_yiwen.png","酷安_coolapk_emotion_10_aoman":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_10_aoman.png","酷安_coolapk_emotion_9_se":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_9_se.png","酷安_coolapk_emotion_8_piezui":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_8_piezui.png","酷安_coolapk_emotion_7_hehe":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_7_hehe.png","酷安_coolapk_emotion_6_weixiao":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_6_weixiao.png","酷安_coolapk_emotion_5_keai":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_5_keai.png","酷安_coolapk_emotion_4_liulei":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_4_liulei.png","酷安_coolapk_emotion_3_ciya":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_3_ciya.png","酷安_coolapk_emotion_2_jingya":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_2_jingya.png","酷安_coolapk_emotion_1_hahaha":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_1_hahaha.png","酷安_c_ty":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_ty.png","酷安_c_twoy":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_twoy.png","酷安_c_twoo":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_twoo.png","酷安_c_twom":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_twom.png","酷安_c_twof":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_twof.png","酷安_c_twod":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_twod.png","酷安_c_teny":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_teny.png","酷安_c_oy":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_oy.png","酷安_c_oney":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_oney.png","酷安_c_oneo":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_oneo.png","酷安_c_onem":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_onem.png","酷安_c_onef":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_onef.png","酷安_c_oned":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_oned.png","酷安_c_fy":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_fy.png","酷安_c_fivey":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_fivey.png","酷安_c_fiveo":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_fiveo.png","酷安_c_fivem":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_fivem.png","酷安_c_fivef":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_fivef.png","酷安_c_fived":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_fived.png","酷安_c_coolb":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_coolb.png","bili_tv_gif_抓狂":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/抓狂.gif","bili_tv_gif_再见":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/再见.gif","bili_tv_gif_晕":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/晕.gif","bili_tv_gif_疑问":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/疑问.gif","bili_tv_gif_斜眼笑":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/斜眼笑.gif","bili_tv_gif_笑哭":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/笑哭.gif","bili_tv_gif_无奈":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/无奈.gif","bili_tv_gif_委屈":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/委屈.gif","bili_tv_gif_微笑":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/微笑.gif","bili_tv_gif_吐血":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/吐血.gif","bili_tv_gif_偷笑":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/偷笑.gif","bili_tv_gif_思考":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/思考.gif","bili_tv_gif_睡着":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/睡着.gif","bili_tv_gif_生气":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/生气.gif","bili_tv_gif_生病":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/生病.gif","bili_tv_gif_色":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/色.gif","bili_tv_gif_亲亲":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/亲亲.gif","bili_tv_gif_呕吐":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/呕吐.gif","bili_tv_gif_难过":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/难过.gif","bili_tv_gif_腼腆":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/腼腆.gif","bili_tv_gif_流汗":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/流汗.gif","bili_tv_gif_流鼻血":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/流鼻血.gif","bili_tv_gif_困":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/困.gif","bili_tv_gif_抠鼻子":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/抠鼻子.gif","bili_tv_gif_可爱":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/可爱.gif","bili_tv_gif_惊吓":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/惊吓.gif","bili_tv_gif_坏笑":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/坏笑.gif","bili_tv_gif_黑人问号":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/黑人问号.gif","bili_tv_gif_害羞":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/害羞.gif","bili_tv_gif_鼓掌":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/鼓掌.gif","bili_tv_gif_尴尬":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/尴尬.gif","bili_tv_gif_发怒":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/发怒.gif","bili_tv_gif_发财":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/发财.gif","bili_tv_gif_调皮":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/调皮.gif","bili_tv_gif_点赞":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/点赞.gif","bili_tv_gif_呆":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/呆.gif","bili_tv_gif_大佬":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/大佬.gif","bili_tv_gif_大哭":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/大哭.gif","bili_tv_gif_打脸":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/打脸.gif","bili_tv_gif_馋":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/馋.gif","bili_tv_gif_闭嘴":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/闭嘴.gif","bili_tv_gif_鄙视":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/鄙视.gif","bili_tv_gif_白眼":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/白眼.gif","bili_tv_gif_doge":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/doge.gif","恶搞QQ_180":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/180.gif","恶搞QQ_179":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/179.gif","恶搞QQ_178":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/178.gif","恶搞QQ_177":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/177.gif","恶搞QQ_176":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/176.gif","恶搞QQ_175":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/175.gif","恶搞QQ_174":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/174.gif","恶搞QQ_173":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/173.gif","恶搞QQ_172":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/172.gif","恶搞QQ_171":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/171.gif","恶搞QQ_170":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/170.gif","恶搞QQ_169":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/169.gif","恶搞QQ_168":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/168.gif","恶搞QQ_167":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/167.gif","恶搞QQ_166":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/166.gif","恶搞QQ_165":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/165.gif","恶搞QQ_164":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/164.gif","恶搞QQ_163":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/163.gif","恶搞QQ_162":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/162.gif","恶搞QQ_161":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/161.gif","恶搞QQ_160":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/160.gif","恶搞QQ_159":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/159.gif","恶搞QQ_158":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/158.jpg","恶搞QQ_157":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/157.gif","恶搞QQ_156":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/156.gif","恶搞QQ_155":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/155.gif","恶搞QQ_154":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/154.gif","恶搞QQ_153":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/153.gif","恶搞QQ_152":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/152.png","恶搞QQ_151":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/151.gif","恶搞QQ_150":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/150.gif","恶搞QQ_149":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/149.gif","恶搞QQ_148":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/148.gif","恶搞QQ_147":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/147.gif","恶搞QQ_146":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/146.gif","恶搞QQ_145":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/145.gif","恶搞QQ_144":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/144.gif","恶搞QQ_143":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/143.gif","恶搞QQ_142":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/142.gif","恶搞QQ_141":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/141.gif","恶搞QQ_140":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/140.gif","恶搞QQ_139":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/139.gif","恶搞QQ_138":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/138.gif","恶搞QQ_137":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/137.gif","恶搞QQ_136":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/136.gif","恶搞QQ_135":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/135.gif","恶搞QQ_134":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/134.gif","恶搞QQ_133":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/133.jpg","恶搞QQ_132":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/132.gif","恶搞QQ_131":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/131.gif","恶搞QQ_130":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/130.gif","恶搞QQ_129":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/129.gif","恶搞QQ_128":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/128.gif","恶搞QQ_127":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/127.gif","恶搞QQ_126":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/126.gif","恶搞QQ_125":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/125.gif","恶搞QQ_124":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/124.gif","恶搞QQ_123":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/123.gif","恶搞QQ_122":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/122.gif","恶搞QQ_121":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/121.gif","恶搞QQ_120":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/120.gif","恶搞QQ_119":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/119.gif","恶搞QQ_118":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/118.gif","恶搞QQ_117":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/117.gif","恶搞QQ_116":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/116.gif","恶搞QQ_115":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/115.gif","恶搞QQ_114":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/114.gif","恶搞QQ_113":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/113.gif","恶搞QQ_112":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/112.gif","恶搞QQ_111":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/111.gif","恶搞QQ_110":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/110.gif","恶搞QQ_109":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/109.jpg","恶搞QQ_108":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/108.gif","恶搞QQ_107":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/107.gif","恶搞QQ_106":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/106.gif","恶搞QQ_105":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/105.gif","恶搞QQ_104":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/104.gif","恶搞QQ_103":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/103.gif","恶搞QQ_102":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/102.gif","恶搞QQ_101":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/101.gif","恶搞QQ_100":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/100.gif","恶搞QQ_99":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/99.gif","恶搞QQ_98":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/98.gif","恶搞QQ_97":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/97.gif","恶搞QQ_96":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/96.jpg","恶搞QQ_95":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/95.gif","恶搞QQ_94":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/94.gif","恶搞QQ_93":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/93.gif","恶搞QQ_92":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/92.gif","恶搞QQ_91":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/91.gif","恶搞QQ_90":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/90.gif","恶搞QQ_89":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/89.gif","恶搞QQ_88":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/88.gif","恶搞QQ_87":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/87.gif","恶搞QQ_86":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/86.gif","恶搞QQ_85":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/85.gif","恶搞QQ_84":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/84.gif","恶搞QQ_83":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/83.gif","恶搞QQ_82":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/82.gif","恶搞QQ_81":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/81.jpg","恶搞QQ_80":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/80.gif","恶搞QQ_79":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/79.gif","恶搞QQ_78":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/78.gif","恶搞QQ_77":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/77.gif","恶搞QQ_76":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/76.gif","恶搞QQ_75":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/75.jpg","恶搞QQ_74":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/74.gif","恶搞QQ_73":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/73.gif","恶搞QQ_72":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/72.gif","恶搞QQ_71":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/71.gif","恶搞QQ_70":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/70.gif","恶搞QQ_69":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/69.gif","恶搞QQ_68":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/68.gif","恶搞QQ_67":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/67.gif","恶搞QQ_66":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/66.gif","恶搞QQ_65":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/65.jpg","恶搞QQ_64":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/64.gif","恶搞QQ_63":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/63.gif","恶搞QQ_62":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/62.gif","恶搞QQ_61":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/61.gif","恶搞QQ_60":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/60.gif","恶搞QQ_59":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/59.gif","恶搞QQ_58":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/58.gif","恶搞QQ_57":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/57.gif","恶搞QQ_56":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/56.gif","恶搞QQ_55":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/55.jpg","恶搞QQ_54":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/54.gif","恶搞QQ_53":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/53.gif","恶搞QQ_52":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/52.gif","恶搞QQ_51":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/51.jpg","恶搞QQ_50":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/50.gif","恶搞QQ_49":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/49.gif","恶搞QQ_48":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/48.gif","恶搞QQ_47":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/47.gif","恶搞QQ_46":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/46.gif","恶搞QQ_45":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/45.gif","恶搞QQ_44":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/44.gif","恶搞QQ_43":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/43.gif","恶搞QQ_42":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/42.gif","恶搞QQ_41":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/41.gif","恶搞QQ_40":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/40.gif","恶搞QQ_39":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/39.gif","恶搞QQ_38":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/38.gif","恶搞QQ_37":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/37.gif","恶搞QQ_36":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/36.gif","恶搞QQ_35":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/35.gif","恶搞QQ_34":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/34.gif","恶搞QQ_33":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/33.gif","恶搞QQ_32":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/32.gif","恶搞QQ_31":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/31.gif","恶搞QQ_30":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/30.gif","恶搞QQ_29":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/29.gif","恶搞QQ_28":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/28.gif","恶搞QQ_27":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/27.gif","恶搞QQ_26":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/26.gif","恶搞QQ_25":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/25.gif","恶搞QQ_24":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/24.gif","恶搞QQ_23":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/23.gif","恶搞QQ_22":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/22.gif","恶搞QQ_21":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/21.gif","恶搞QQ_20":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/20.gif","恶搞QQ_19":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/19.gif","恶搞QQ_18":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/18.gif","恶搞QQ_17":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/17.gif","恶搞QQ_16":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/16.gif","恶搞QQ_15":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/15.gif","恶搞QQ_14":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/14.gif","恶搞QQ_13":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/13.gif","恶搞QQ_12":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/12.png","恶搞QQ_11":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/11.gif","恶搞QQ_10":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/10.png","恶搞QQ_9":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/9.gif","恶搞QQ_8":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/8.gif","恶搞QQ_7":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/7.gif","恶搞QQ_6":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/6.gif","恶搞QQ_5":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/5.gif","恶搞QQ_4":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/4.gif","恶搞QQ_3":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/3.gif","恶搞QQ_2":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/2.gif","恶搞QQ_1":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/1.gif","custom_32":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/31.webp","custom_31":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/30.gif","custom_30":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/29.webp","custom_29":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/28.webp","custom_28":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/27.webp","custom_27":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/26.webp","custom_26":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/25.jpg","custom_25":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/24.webp","custom_24":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/23.webp","custom_23":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/22.webp","custom_22":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/21.webp","custom_21":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/20.webp","custom_20":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/19.webp","custom_19":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/18.jpg","custom_18":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/17.webp","custom_17":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/16.webp","custom_16":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/15.webp","custom_15":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/14.webp","custom_14":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/13.webp","custom_13":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/12.webp","custom_12":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/11.webp","custom_11":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/10.webp","custom_10":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/9.webp","custom_9":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/8.webp","custom_8":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/7.webp","custom_7":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/6.gif","custom_6":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/5.gif","custom_5":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/4.jpg","custom_4":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/3.jpg","custom_3":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/2.webp","custom_2":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/1.webp"},
+      enableQQ: true,
+      path: window.location.pathname,
+      master: master,
+      friends: friends,
+      tagMeta: tagMeta,
+      metaPlaceholder: {"nick":"昵称/QQ号(必填)","mail":"邮箱(必填)","link":"网址(https://)","tagMeta":"博主,小伙伴,访客"}
+    });
+    if ('nick,mail') { valine.config.requiredFields= 'nick,mail'.split(',') }
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else $.getScript('https://cdn.jsdelivr.net/gh/xiaopengand/blogCdn@latest/Valine.min.js', initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) loadComment(document.querySelector('#vcomment'),loadValine)
+  else setTimeout(() => loadValine(), 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script src="https://cdn.jsdelivr.net/gh/xiaopengand/blogCdn@latest/fishes.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-show-text.min.js" data-mobile="true" data-text="富强,民主,文明,和谐,爱国,敬业,诚信,友善,自由,平等,公正,法治" data-fontsize="15px" data-random="true" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

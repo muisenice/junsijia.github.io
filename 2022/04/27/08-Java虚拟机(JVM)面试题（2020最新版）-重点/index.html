@@ -1,0 +1,517 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Muise | Muise</title><meta name="keywords" content="muise,junsijia"><meta name="author" content="Muise"><meta name="copyright" content="Muise"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="说一下 JVM 的主要组成部分及其作用？ JVM包含两个子系统和两个组件，两个子系统为Class loader(类装载)、 Execution engine(执行引擎)；两个组件为Runtime data area(运行时数据 区)、Native Interface(本地接口)。   Class loader(类装载)：根据给定的全限定名类名(如： java.lang.Object)来装载clas">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Muise">
+<meta property="og:url" content="https://blog.muise.tk/2022/04/27/08-Java%E8%99%9A%E6%8B%9F%E6%9C%BA(JVM)%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89-%E9%87%8D%E7%82%B9/index.html">
+<meta property="og:site_name" content="Muise">
+<meta property="og:description" content="说一下 JVM 的主要组成部分及其作用？ JVM包含两个子系统和两个组件，两个子系统为Class loader(类装载)、 Execution engine(执行引擎)；两个组件为Runtime data area(运行时数据 区)、Native Interface(本地接口)。   Class loader(类装载)：根据给定的全限定名类名(如： java.lang.Object)来装载clas">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2020/12/10/e2E7d5mRJstTNu9.jpg">
+<meta property="article:published_time" content="2022-04-26T16:22:23.113Z">
+<meta property="article:modified_time" content="2021-02-28T09:38:35.722Z">
+<meta property="article:author" content="Muise">
+<meta property="article:tag" content="muise,junsijia">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2020/12/10/e2E7d5mRJstTNu9.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://blog.muise.tk/2022/04/27/08-Java%E8%99%9A%E6%8B%9F%E6%9C%BA(JVM)%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89-%E9%87%8D%E7%82%B9/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: {"limitDay":180,"position":"top","messagePrev":"自上次文章更新已有","messageNext":"天，文章的内容可能已经过时"},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":249,"languages":{"author":"作者: Muise","link":"链接: ","source":"来源: Muise","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#121212","position":"bottom-centers"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery@2/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isAnchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Muise',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: true,
+  isToc: true,
+  postUpdate: '2021-02-28 17:38:35'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xiaopengand/blogCdn@latest/xpand_fish.css"><meta name="generator" content="Hexo 6.1.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://blog.muise.tk/img/favicon.png" onerror="onerror=null;src='/img/favicon.png'" alt="avatar"/></div><div class="site-data is-center"><div class="data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a></div><div class="data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a></div><div class="data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://i.loli.net/2020/12/10/e2E7d5mRJstTNu9.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Muise</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">无题</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-04-26T16:22:23.113Z" title="发表于 2022-04-27 00:22:23">2022-04-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-02-28T09:38:35.722Z" title="更新于 2021-02-28 17:38:35">2021-02-28</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">8.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>27分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="说一下-JVM-的主要组成部分及其作用？"><a href="#说一下-JVM-的主要组成部分及其作用？" class="headerlink" title="说一下 JVM 的主要组成部分及其作用？"></a>说一下 JVM 的主要组成部分及其作用？</h2><p><img src="F:\0马士兵\新建文件夹\BAT面试突击资料(1)\OUT\03-2020最新整理一线大厂面试题合集(重点看)\08-Java虚拟机(JVM)面试题（2020最新版）-重点.assets/JVM的主要组成部分.png" alt="JVM 的主要组成部分"></p>
+<p>JVM包含两个子系统和两个组件，两个子系统为Class loader(类装载)、 Execution engine(执行引擎)；两个组件为Runtime data area(运行时数据 区)、Native Interface(本地接口)。 </p>
+<ul>
+<li>Class loader(类装载)：根据给定的全限定名类名(如： java.lang.Object)来装载class文件到Runtime data area中的method area。 </li>
+<li>Execution engine（执行引擎）：执行classes中的指令。 </li>
+<li>Native Interface(本地接口)：与native libraries交互，是其它编程语 言交互的接口。 </li>
+<li>Runtime data area(运行时数据区域)：这就是我们常说的JVM的内 存。</li>
+</ul>
+<p><strong>作用 ：</strong>首先通过编译器把 Java 代码转换成字节码，类加载器（ClassLoader） 再把字节码加载到内存中，将其放在运行时数据区（Runtime data area）的方 法区内，而字节码文件只是 JVM 的一套指令集规范，并不能直接交给底层操作 系统去执行，因此需要特定的命令解析器执行引擎（Execution Engine），将 字节码翻译成底层系统指令，再交由 CPU 去执行，而这个过程中需要调用其他 语言的本地库接口（Native Interface）来实现整个程序的功能。 </p>
+<p>**下面是Java程序运行机制详细说明 **</p>
+<p>Java程序运行机制步骤 </p>
+<p>首先利用IDE集成开发工具编写Java源代码，源文件的后缀为.java； </p>
+<p>再利用编译器(javac命令)将源代码编译成字节码文件，字节码文件的后缀名 为.class； </p>
+<p>运行字节码的工作是由解释器(java命令)来完成的。</p>
+<p><img src="F:\0马士兵\新建文件夹\BAT面试突击资料(1)\OUT\03-2020最新整理一线大厂面试题合集(重点看)\08-Java虚拟机(JVM)面试题（2020最新版）-重点.assets/Java程序运行机制.png" alt="Java程序运行机制"></p>
+<p>从上图可以看，java文件通过编译器变成了.class文件，接下来类加载器又将这 些.class文件加载到JVM中。 </p>
+<p>其实可以一句话来解释：类的加载指的是将类的.class文件中的二进制数据读入 到内存中，将其放在运行时数据区的方法区内，然后在堆区创建一个  java.lang.Class对象，用来封装类在方法区内的数据结构。 </p>
+<h2 id="说一下-JVM-运行时数据区"><a href="#说一下-JVM-运行时数据区" class="headerlink" title="说一下 JVM 运行时数据区"></a>说一下 JVM 运行时数据区</h2><p><strong>Java 虚拟机在执行 Java 程序的过程中会把它所管理的内存区域划分为若干个 不同的数据区域。</strong>这些区域都有各自的用途，以及创建和销毁的时间，有些区域 随着虚拟机进程的启动而存在，有些区域则是依赖线程的启动和结束而建立和销 毁。Java 虚拟机所管理的内存被划分为如下几个区域：</p>
+<p><img src="F:\0马士兵\新建文件夹\BAT面试突击资料(1)\OUT\03-2020最新整理一线大厂面试题合集(重点看)\08-Java虚拟机(JVM)面试题（2020最新版）-重点.assets/Java虚拟机内存区域.png" alt="Java虚拟机内存区域"></p>
+<p>不同虚拟机的运行时数据区可能略微有所不同，但都会遵从 Java 虚拟机规范，  Java 虚拟机规范规定的区域分为以下 5 个部分： </p>
+<ul>
+<li>程序计数器（Program Counter Register）：当前线程所执行的字节码的行号 指示器，字节码解析器的工作是通过改变这个计数器的值，来选取下一条需要执行的 字节码指令，分支、循环、跳转、异常处理、线程恢复等基础功能，都需要依赖这个 计数器来完成；</li>
+<li>Java 虚拟机栈（Java Virtual Machine Stacks）：用于存储局部变量表、操作 数栈、动态链接、方法出口等信息； </li>
+<li>本地方法栈（Native Method Stack）：与虚拟机栈的作用是一样的，只不过虚 拟机栈是服务 Java 方法的，而本地方法栈是为虚拟机调用 Native 方法服务的； </li>
+<li>Java 堆（Java Heap）：Java 虚拟机中内存大的一块，是被所有线程共享 的，几乎所有的对象实例都在这里分配内存； </li>
+<li>方法区（Methed Area）：用于存储已被虚拟机加载的类信息、常量、静态变 量、即时编译后的代码等数据。</li>
+</ul>
+<h2 id="深拷贝和浅拷贝"><a href="#深拷贝和浅拷贝" class="headerlink" title="深拷贝和浅拷贝"></a>深拷贝和浅拷贝</h2><p>浅拷贝（shallowCopy）只是增加了一个指针指向已存在的内存地址， </p>
+<p>深拷贝（deepCopy）是增加了一个指针并且申请了一个新的内存，使这个增加 的指针指向这个新的内存， </p>
+<p>使用深拷贝的情况下，释放内存的时候不会因为出现浅拷贝时释放同一个内存的 错误。 </p>
+<p>浅复制：仅仅是指向被复制的内存地址，如果原地址发生改变，那么浅复制出来 的对象也会相应的改变。 </p>
+<p>深复制：在计算机中开辟一块<strong>新的内存地址</strong>用于存放复制的对象。 </p>
+<h2 id="说一下堆栈的区别？"><a href="#说一下堆栈的区别？" class="headerlink" title="说一下堆栈的区别？"></a>说一下堆栈的区别？</h2><p>物理地址 </p>
+<p>堆的物理地址分配对对象是不连续的。因此性能慢些。在GC的时候也要考虑到 不连续的分配，所以有各种算法。比如，标记-消除，复制，标记-压缩，分代 （即新生代使用复制算法，老年代使用标记——压缩） 栈使用的是数据结构中的栈，先进后出的原则，物理地址分配是连续的。所以性 能快。 </p>
+<p>**内存分别 **</p>
+<p>堆因为是不连续的，所以分配的内存是在运行期确认的，因此大小不固定。一般 堆大小远远大于栈。 </p>
+<p>栈是连续的，所以分配的内存大小要在编译期就确认，大小是固定的。 </p>
+<p>**存放的内容 **</p>
+<p>堆存放的是对象的实例和数组。因此该区更关注的是数据的存储 </p>
+<p>栈存放：局部变量，操作数栈，返回结果。该区更关注的是程序方法的执行。<br>PS：</p>
+<ol>
+<li>静态变量放在方法区 </li>
+<li>静态的对象还是放在堆。</li>
+</ol>
+<p>程序的可见度 </p>
+<p>堆对于整个应用程序都是共享、可见的。 </p>
+<p>栈只对于线程是可见的。所以也是线程私有。他的生命周期和线程相同。</p>
+<h2 id="队列和栈是什么？有什么区别？"><a href="#队列和栈是什么？有什么区别？" class="headerlink" title="队列和栈是什么？有什么区别？"></a>队列和栈是什么？有什么区别？</h2><p>队列和栈都是被用来预存储数据的。 </p>
+<ul>
+<li>操作的名称不同。队列的插入称为入队，队列的删除称为出队。栈的插入称为进 栈，栈的删除称为出栈。 </li>
+<li>可操作的方式不同。队列是在队尾入队，队头出队，即两边都可操作。而栈的进 栈和出栈都是在栈顶进行的，无法对栈底直接进行操作。 </li>
+<li>操作的方法不同。队列是先进先出（FIFO），即队列的修改是依先进先出的原 则进行的。新来的成员总是加入队尾（不能从中间插入），每次离开的成员总是队列 头上（不允许中途离队）。而栈为后进先出（LIFO）,即每次删除（出栈）的总是当 前栈中新的元素，即后插入（进栈）的元素，而先插入的被放在栈的底部，要到后才能删除。</li>
+</ul>
+<h2 id="对象的创建"><a href="#对象的创建" class="headerlink" title="对象的创建"></a>对象的创建</h2><p> 说到对象的创建，首先让我们看看 Java 中提供的几种对象创建方式：</p>
+<table>
+<thead>
+<tr>
+<th>Header</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>使用new关键字</td>
+<td>调用了构造函数</td>
+</tr>
+<tr>
+<td>使用Class的newInstance方法</td>
+<td>调用了构造函数</td>
+</tr>
+<tr>
+<td>使用Constructor类的newInstance方法</td>
+<td>调用了构造函数</td>
+</tr>
+<tr>
+<td>使用clone方法</td>
+<td>没有调用构造函数</td>
+</tr>
+<tr>
+<td>使用反序列化</td>
+<td>没有调用构造函数</td>
+</tr>
+</tbody></table>
+<p>下面是对象创建的主要流程:</p>
+<p><img src="F:\0马士兵\新建文件夹\BAT面试突击资料(1)\OUT\03-2020最新整理一线大厂面试题合集(重点看)\08-Java虚拟机(JVM)面试题（2020最新版）-重点.assets/对象创建的主要流程.png" alt="对象创建的主要流程"></p>
+<p>虚拟机遇到一条new指令时，先检查常量池是否已经加载相应的类，如果没有， 必须先执行相应的类加载。类加载通过后，接下来分配内存。若Java堆中内存是 绝对规整的，使用“指针碰撞“方式分配内存；如果不是规整的，就从空闲列表 中分配，叫做”空闲列表“方式。划分内存时还需要考虑一个问题-并发，也有 两种方式: CAS同步处理，或者本地线程分配缓冲(Thread Local Allocation  Buffer, TLAB)。然后内存空间初始化操作，接着是做一些必要的对象设置(元信 息、哈希码…)，后执行方法。 </p>
+<h2 id="为对象分配内存"><a href="#为对象分配内存" class="headerlink" title="为对象分配内存"></a>为对象分配内存</h2><p>类加载完成后，接着会在Java堆中划分一块内存分配给对象。内存分配根据Java 堆是否规整，有两种方式： </p>
+<ul>
+<li>指针碰撞：如果Java堆的内存是规整，即所有用过的内存放在一边，而空闲的的 放在另一边。分配内存时将位于中间的指针指示器向空闲的内存移动一段与对象大小 相等的距离，这样便完成分配内存工作。 </li>
+<li>空闲列表：如果Java堆的内存不是规整的，则需要由虚拟机维护一个列表来记录 那些内存是可用的，这样在分配的时候可以从列表中查询到足够大的内存分配给对 象，并在分配后更新列表记录。</li>
+</ul>
+<p>选择哪种分配方式是由 Java 堆是否规整来决定的，而 Java 堆是否规整又由所 采用的垃圾收集器是否带有压缩整理功能决定。</p>
+<p><img src="F:\0马士兵\新建文件夹\BAT面试突击资料(1)\OUT\03-2020最新整理一线大厂面试题合集(重点看)\08-Java虚拟机(JVM)面试题（2020最新版）-重点.assets/内存分配的两种方式.png" alt="内存分配的两种方式"></p>
+<h2 id="处理并发安全问题"><a href="#处理并发安全问题" class="headerlink" title="处理并发安全问题"></a>处理并发安全问题</h2><p>对象的创建在虚拟机中是一个非常频繁的行为，哪怕只是修改一个指针所指向的 位置，在并发情况下也是不安全的，可能出现正在给对象 A 分配内存，指针还 没来得及修改，对象 B 又同时使用了原来的指针来分配内存的情况。解决这个 问题有两种方案： </p>
+<p>对分配内存空间的动作进行同步处理（采用 CAS + 失败重试来保障更新操作的 原子性）； </p>
+<p>把内存分配的动作按照线程划分在不同的空间之中进行，即每个线程在 Java 堆 中预先分配一小块内存，称为本地线程分配缓冲（Thread Local Allocation Buffer,  TLAB）。哪个线程要分配内存，就在哪个线程的 TLAB 上分配。只有 TLAB 用完并 分配新的 TLAB 时，才需要同步锁。通过-XX:+&#x2F;-UserTLAB参数来设定虚拟机是否使 用TLAB。</p>
+<p><img src="F:\0马士兵\新建文件夹\BAT面试突击资料(1)\OUT\03-2020最新整理一线大厂面试题合集(重点看)\08-Java虚拟机(JVM)面试题（2020最新版）-重点.assets/内存分配时保证线程安全的两种方式.png" alt="内存分配时保证线程安全的两种方式"></p>
+<h2 id="对象的访问定位"><a href="#对象的访问定位" class="headerlink" title="对象的访问定位"></a>对象的访问定位</h2><p><strong>Java</strong>程序需要通过 <strong>JVM</strong> 栈上的引用访问堆中的具体对象。对象的访问方式取决 于 JVM 虚拟机的实现。目前主流的访问方式有 <strong>句柄</strong> 和 <strong>直接指针</strong> 两种方式。 </p>
+<p>指针： 指向对象，代表一个对象在内存中的起始地址。 </p>
+<p>句柄： 可以理解为指向指针的指针，维护着对象的指针。句柄不直接指向对象，而是 指向对象的指针（句柄不发生变化，指向固定内存地址），再由对象的指针指向对象的 真实内存地址。 </p>
+<h3 id="句柄访问"><a href="#句柄访问" class="headerlink" title="句柄访问"></a>句柄访问</h3><p>Java堆中划分出一块内存来作为<strong>句柄池</strong>，引用中存储对象的<strong>句柄地址</strong>，而句柄中 包含了<strong>对象实例数据</strong>与<strong>对象类型数据</strong>各自的<strong>具体地址</strong>信息，具体构造如下图所 示：</p>
+<p> <img src="F:\0马士兵\新建文件夹\BAT面试突击资料(1)\OUT\03-2020最新整理一线大厂面试题合集(重点看)\08-Java虚拟机(JVM)面试题（2020最新版）-重点.assets/句柄访问.png" alt="句柄访问"></p>
+<p><strong>优势</strong>：引用中存储的是<strong>稳定</strong>的句柄地址，在对象被移动（垃圾收集时移动对象是 非常普遍的行为）时只会改变<strong>句柄</strong>中的<strong>实例数据指针</strong>，而<strong>引用</strong>本身不需要修改。 </p>
+<h3 id="直接指针"><a href="#直接指针" class="headerlink" title="直接指针"></a>直接指针</h3><p>如果使用<strong>直接指针</strong>访问，<strong>引用</strong> 中存储的直接就是<strong>对象地址</strong>，那么Java堆对象内 部的布局中就必须考虑如何放置访问<strong>类型数据</strong>的相关信息。</p>
+<p><img src="F:\0马士兵\新建文件夹\BAT面试突击资料(1)\OUT\03-2020最新整理一线大厂面试题合集(重点看)\08-Java虚拟机(JVM)面试题（2020最新版）-重点.assets/直接指针.png" alt="直接指针"></p>
+<p>优势：速度更快，节省了一次指针定位的时间开销。由于对象的访问在Java中非 常频繁，因此这类开销积少成多后也是非常可观的执行成本。HotSpot 中采用 的就是这种方式。 </p>
+<h2 id="内存溢出异常-Java会存在内存泄漏吗？请简单描述"><a href="#内存溢出异常-Java会存在内存泄漏吗？请简单描述" class="headerlink" title="内存溢出异常 Java会存在内存泄漏吗？请简单描述"></a>内存溢出异常 Java会存在内存泄漏吗？请简单描述</h2><p>内存泄漏是指不再被使用的对象或者变量一直被占据在内存中。理论上来说， Java是有GC垃圾回收机制的，也就是说，不再被使用的对象，会被GC自动回收 掉，自动从内存中清除。 </p>
+<p>但是， 即使这样，Java也还是存在着内存泄漏的情况，java导致内存泄露的原因 很明确：长生命周期的对象持有短生命周期对象的引用就很可能发生内存泄露， 尽管短生命周期对象已经不再需要，但是因为长生命周期对象持有它的引用而导 致不能被回收，这就是java中内存泄露的发生场景。</p>
+<h1 id="内存溢出异常"><a href="#内存溢出异常" class="headerlink" title="内存溢出异常**"></a><strong>内</strong>存溢出异常**</h1><p><strong>Java</strong>会存在内存泄漏吗？请简单描述**</p>
+<p>内存泄漏是指不再被使用的对象或者变量一直被占据在内存中。理论上来说， Java是有GC垃圾回收机制的，也就是说，不再被使用的对象，会被GC自动回收 掉，自动从内存中清除。</p>
+<p>但是，即使这样，Java也还是存在着内存泄漏的情况，java导致内存泄露的原因 很明确：长生命周期的对象持有短生命周期对象的引用就很可能发生内存泄露， 尽管短生命周期对象已经不再需要，但是因为长生命周期对象持有它的引用而导 致不能被回收，这就是java中内存泄露的发生场景。</p>
+<p><strong>垃</strong>圾收集器**</p>
+<p><strong>简述Java垃圾回收机制</strong></p>
+<p>在java中，程序员是不需要显示的去释放一个对象的内存的，而是由虚拟机自行 执行。在JVM中，有一个垃圾回收线程，它是低优先级的，在正常情况下是不会 执行的，只有在虚拟机空闲或者当前堆内存不足时，才会触发执行，扫面那些没 有被任何引用的对象，并将它们添加到要回收的集合中，进行回收。</p>
+<p><strong>GC</strong>是什么？为什么要GC**</p>
+<p>GC 是垃圾收集的意思（Gabage Collection）,内存处理是编程人员容易出现问 题的地方，忘记或者错误的内存</p>
+<p>回收会导致程序或系统的不稳定甚至崩溃，Java 提供的 GC 功能可以自动监测 对象是否超过作用域从而达到自动</p>
+<p>回收内存的目的，Java 语言没有提供释放已分配内存的显示操作方法。</p>
+<p><strong>垃圾回收的优点和原理。并考虑2种回收机制</strong></p>
+<p>java语言最显著的特点就是引入了垃圾回收机制，它使java程序员在编写程序时 不再考虑内存管理的问题。</p>
+<p>由于有这个垃圾回收机制，java中的对象不再有“作用域”的概念，只有引用的 对象才有“作用域”。</p>
+<p>垃圾回收机制有效的防止了内存泄露，可以有效的使用可使用的内存。</p>
+<p>垃圾回收器通常作为一个单独的低级别的线程运行，在不可预知的情况下对内存 堆中已经死亡的或很长时间没有用过的对象进行清除和回收。</p>
+<p>程序员不能实时的对某个对象或所有对象调用垃圾回收器进行垃圾回收。 垃圾回收有分代复制垃圾回收、标记垃圾回收、增量垃圾回收。</p>
+<p><strong>垃圾回收器的基本原理是什么？垃圾回收器可以马上回收 内存吗？有什么办法主动通知虚拟机进行垃圾回收？</strong> 对于GC来说，当程序员创建对象时，GC就开始监控这个对象的地址、大小以及 使用情况。</p>
+<p>通常，GC采用有向图的方式记录和管理堆(heap)中的所有对象。通过这种方式 确定哪些对象是”可达的”，哪些对象是”不可达的”。当GC确定一些对象为”不可 达”时，GC就有责任回收这些内存空间。</p>
+<p>可以。程序员可以手动执行System.gc()，通知GC运行，但是Java语言规范并不 保证GC一定会执行。</p>
+<p><strong>Java</strong> <strong>中都有哪些引用类型？</strong></p>
+<ul>
+<li>强引用：发生 gc 的时候不会被回收。</li>
+<li>软引用：有用但不是必须的对象，在发生内存溢出之前会被回收。</li>
+<li>弱引用：有用但不是必须的对象，在下一次GC时会被回收。</li>
+<li>虚引用（幽灵引用&#x2F;幻影引用）：无法通过虚引用获得对象，用</li>
+</ul>
+<p>PhantomReference 实现虚引用，虚引用的用途是在 gc 时返回一个通知。</p>
+<p><strong>怎么判断对象是否可以被回收？</strong></p>
+<p>垃圾收集器在做垃圾回收的时候，首先需要判定的就是哪些内存是需要被回收 的，哪些对象是「存活」的，是不可以被回收的；哪些对象已经「死掉」了，需 要被回收。</p>
+<p>一般有两种方法来判断：</p>
+<ul>
+<li>引用计数器法：为每个对象创建一个引用计数，有对象引用时计数器 +1，引用 被释放时计数 -1，当计数器为 0 时就可以被回收。它有一个缺点不能解决循环引用 的问题；</li>
+<li>可达性分析算法：从 GC Roots 开始向下搜索，搜索所走过的路径称为引用链。 当一个对象到 GC Roots 没有任何引用链相连时，则证明此对象是可以被回收的。</li>
+</ul>
+<p><strong>在Java中，对象什么时候可以被垃圾回收</strong></p>
+<p>当对象对当前使用这个对象的应用程序变得不可触及的时候，这个对象就可以被 回收了。</p>
+<p>垃圾回收不会发生在永久代，如果永久代满了或者是超过了临界值，会触发完全 垃圾回收(Full GC)。如果你仔细查看垃圾收集器的输出信息，就会发现永久代 也是被回收的。这就是为什么正确的永久代大小对避免Full GC是非常重要的原 因。</p>
+<p><strong>JVM</strong>中的永久代中会发生垃圾回收吗**</p>
+<p>垃圾回收不会发生在永久代，如果永久代满了或者是超过了临界值，会触发完全 垃圾回收(Full GC)。如果你仔细查看垃圾收集器的输出信息，就会发现永久代 也是被回收的。这就是为什么正确的永久代大小对避免Full GC是非常重要的原 因。请参考下Java8：从永久代到元数据区</p>
+<p>(译者注：Java8中已经移除了永久代，新加了一个叫做元数据区的native内存 区)</p>
+<p><strong>说一下 JVM 有哪些垃圾回收算法？</strong></p>
+<ul>
+<li>标记-清除算法：标记无用对象，然后进行清除回收。缺点：效率不高，无法清 除垃圾碎片。</li>
+<li>复制算法：按照容量划分二个大小相等的内存区域，当一块用完的时候将活着的 对象复制到另一块上，然后再把已使用的内存空间一次清理掉。缺点：内存使用率不 高，只有原来的一半。</li>
+<li>标记-整理算法：标记无用对象，让所有存活的对象都向一端移动，然后直接清 除掉端边界以外的内存。</li>
+<li>分代算法：根据对象存活周期的不同将内存划分为几块，一般是新生代和老年 代，新生代基本采用复制算法，老年代采用标记整理算法。</li>
+</ul>
+<p><strong>标记</strong>-<strong>清</strong>除算法**</p>
+<p>标记无用对象，然后进行清除回收。</p>
+<p>标记-清除算法（Mark-Sweep）是一种常见的基础垃圾收集算法，它将垃圾收 集分为两个阶段：</p>
+<ul>
+<li>标记阶段：标记出可以回收的对象。</li>
+<li>清除阶段：回收被标记的对象所占用的空间。</li>
+</ul>
+<p>标记-清除算法之所以是基础的，是因为后面讲到的垃圾收集算法都是在此算法 的基础上进行改进的。</p>
+<p><strong>优</strong>点**：实现简单，不需要对象进行移动。</p>
+<p><strong>缺</strong>点**：标记、清除过程效率低，产生大量不连续的内存碎片，提高了垃圾回收的 频率。</p>
+<p>标记-清除算法的执行的过程如下图所示</p>
+<p><img src="F:\0马士兵\新建文件夹\BAT面试突击资料(1)\OUT\03-2020最新整理一线大厂面试题合集(重点看)\08-Java虚拟机(JVM)面试题（2020最新版）-重点.assets/标记-清除算法.png" alt="标记-清除算法"></p>
+<p><strong>复制算</strong>法**</p>
+<p>为了解决标记-清除算法的效率不高的问题，产生了复制算法。它把内存空间划 为两个相等的区域，每次只使用其中一个区域。垃圾收集时，遍历当前使用的区 域，把存活对象复制到另外一个区域中，最后将当前使用的区域的可回收的对象 进行回收。</p>
+<p><strong>优</strong>点<strong>：按顺序分配内存即可，实现简单、运行高效，不用考虑内存碎片。 <strong>缺</strong>点</strong>：可用的内存大小缩小为原来的一半，对象存活率高时会频繁进行复制。 复制算法的执行过程如下图所示</p>
+<p><img src="F:\0马士兵\新建文件夹\BAT面试突击资料(1)\OUT\03-2020最新整理一线大厂面试题合集(重点看)\08-Java虚拟机(JVM)面试题（2020最新版）-重点.assets/复制算法.png" alt="复制算法"></p>
+<p><strong>标记</strong>-<strong>整</strong>理算法**</p>
+<p>在新生代中可以使用复制算法，但是在老年代就不能选择复制算法了，因为老年 代的对象存活率会较高，这样会有较多的复制操作，导致效率变低。标记-清除 算法可以应用在老年代中，但是它效率不高，在内存回收后容易产生大量内存碎 片。因此就出现了一种标记-整理算法（Mark-Compact）算法，与标记-整理 算法不同的是，在标记可回收的对象后将所有存活的对象压缩到内存的一端，使 他们紧凑的排列在一起，然后对端边界以外的内存进行回收。回收后，已用和未 用的内存都各自一边。</p>
+<p><strong>优</strong>点**：解决了标记-清理算法存在的内存碎片问题。</p>
+<p><strong>缺</strong>点**：仍需要进行局部对象移动，一定程度上降低了效率。</p>
+<p>标记-整理算法的执行过程如下图所示</p>
+<p><img src="F:\0马士兵\新建文件夹\BAT面试突击资料(1)\OUT\03-2020最新整理一线大厂面试题合集(重点看)\08-Java虚拟机(JVM)面试题（2020最新版）-重点.assets/标记-整理算法.png" alt="标记-整理算法"></p>
+<p><strong>分代收</strong>集<strong>算法</strong></p>
+<p>当前商业虚拟机都采用<strong>分</strong>代<strong>收</strong>集<strong>的垃圾收集算法。分代收集算法，顾名思义是根 据对象的</strong>存活周期<strong>将内存划分为几块。一般包括</strong>年轻代<strong>、</strong>老年代** 和 <strong>永久代</strong>，如 图所示：</p>
+<p><img src="F:\0马士兵\新建文件夹\BAT面试突击资料(1)\OUT\03-2020最新整理一线大厂面试题合集(重点看)\08-Java虚拟机(JVM)面试题（2020最新版）-重点.assets/分代收集算法.png" alt="分代收集算法"></p>
+<p><strong>说一下 JVM 有哪些垃圾回收器？</strong></p>
+<p>如果说垃圾收集算法是内存回收的方法论，那么垃圾收集器就是内存回收的具体 实现。下图展示了7种作用于不同分代的收集器，其中用于回收新生代的收集器 包括Serial、PraNew、Parallel Scavenge，回收老年代的收集器包括Serial Old、Parallel Old、CMS，还有用于回收整个Java堆的G1收集器。不同收集器 之间的连线表示它们可以搭配使用。</p>
+<p><img src="F:\0马士兵\新建文件夹\BAT面试突击资料(1)\OUT\03-2020最新整理一线大厂面试题合集(重点看)\08-Java虚拟机(JVM)面试题（2020最新版）-重点.assets/垃圾回收器.png" alt="垃圾回收器"></p>
+<ul>
+<li>Serial收集器（复制算法): 新生代单线程收集器，标记和清理都是单线程，优点 是简单高效；</li>
+<li>ParNew收集器 (复制算法): 新生代收并行集器，实际上是Serial收集器的多线程 版本，在多核CPU环境下有着比Serial更好的表现；</li>
+<li>Parallel Scavenge收集器 (复制算法): 新生代并行收集器，追求高吞吐量，高效 利用 CPU。吞吐量 &#x3D; 用户线程时间&#x2F;(用户线程时间+GC线程时间)，高吞吐量可以高 效率的利用CPU时间，尽快完成程序的运算任务，适合后台应用等对交互相应要求不 高的场景；</li>
+<li>Serial Old收集器 (标记-整理算法): 老年代单线程收集器，Serial收集器的老年 代版本；</li>
+<li>Parallel Old收集器 (标记-整理算法)： 老年代并行收集器，吞吐量优先， Parallel Scavenge收集器的老年代版本；</li>
+<li>CMS(Concurrent Mark Sweep)收集器（标记-清除算法）： 老年代并行收集 器，以获取最短回收停顿时间为目标的收集器，具有高并发、低停顿的特点，追求最 短GC回收停顿时间。</li>
+<li>G1(Garbage First)收集器 (标记-整理算法)： Java堆并行收集器，G1收集器是 JDK1.7提供的一个新收集器，G1收集器基于“标记-整理”算法实现，也就是说不会 产生内存碎片。此外，G1收集器不同于之前的收集器的一个重要特点是：G1回收的范围是整个Java堆(包括新生代，老年代)，而前六种收集器回收的范围仅限于新生代 或老年代。</li>
+</ul>
+<p><strong>详细介绍一下 CMS 垃圾回收器？</strong></p>
+<p>CMS 是英文 Concurrent Mark-Sweep 的简称，是以牺牲吞吐量为代价来获得 最短回收停顿时间的垃圾回收器。对于要求服务器响应速度的应用上，这种垃圾 回收器非常适合。在启动 JVM 的参数加上“- XX:+UseConcMarkSweepGC”来指定使用 CMS 垃圾回收器。 CMS 使用的是标记-清除的算法实现的，所以在 gc的时候回产生大量的内存碎 片，当剩余内存不能满足程序运行要求时，系统将会出现 Concurrent Mode Failure，临时 CMS 会采用 Serial Old 回收器进行垃圾清除，此时的性能将会 被降低。</p>
+<p><strong>新生代垃圾回收器和老年代垃圾回收器都有哪些？有什么 区别？</strong></p>
+<ul>
+<li>新生代回收器：Serial、ParNew、Parallel Scavenge</li>
+<li>老年代回收器：Serial Old、Parallel Old、CMS</li>
+<li>整堆回收器：G1</li>
+</ul>
+<p>新生代垃圾回收器一般采用的是复制算法，复制算法的优点是效率高，缺点是内 存利用率低；老年代回收器一般采用的是标记-整理的算法进行垃圾回收。</p>
+<p><strong>简述分代垃圾回收器是怎么工作的？</strong></p>
+<p>分代回收器有两个分区：老生代和新生代，新生代默认的空间占比总空间的 1&#x2F;3，老生代的默认占比是 2&#x2F;3。</p>
+<p>新生代使用的是复制算法，新生代里有 3 个分区：Eden、To Survivor、From Survivor，它们的默认占比是 8:1:1，它的执行流程如下：</p>
+<ul>
+<li>把 Eden + From Survivor 存活的对象放入 To Survivor 区；</li>
+<li>清空 Eden 和 From Survivor 分区；</li>
+<li>From Survivor 和 To Survivor 分区交换，From Survivor 变 To Survivor，To Survivor 变 From Survivor。</li>
+</ul>
+<p>每次在 From Survivor 到 To Survivor 移动时都存活的对象，年龄就 +1，当年 龄到达 15（默认配置是 15）时，升级为老生代。大对象也会直接进入老生代。</p>
+<p>老生代当空间占用到达某个值之后就会触发全局垃圾收回，一般使用标记整理的 执行算法。以上这些循环往复就构成了整个分代垃圾回收的整体执行流程。</p>
+<p><strong>内</strong>存分配策略**</p>
+<p><strong>简述java内存分配与回收策率以及Minor GC和Major GC</strong></p>
+<p>所谓自动内存管理，最终要解决的也就是内存分配和内存回收两个问题。前面我 们介绍了内存回收，这里我们再来聊聊内存分配。</p>
+<p>对象的内存分配通常是在 Java 堆上分配（随着虚拟机优化技术的诞生，某些场 景下也会在栈上分配，后面会详细介绍），对象主要分配在新生代的 Eden 区， 如果启动了本地线程缓冲，将按照线程优先在 TLAB 上分配。少数情况下也会直 接在老年代上分配。总的来说分配规则不是百分百固定的，其细节取决于哪一种 垃圾收集器组合以及虚拟机相关参数有关，但是虚拟机对于内存的分配还是会遵 循以下几种「普世」规则：</p>
+<p><strong>对象优</strong>先<strong>在 Eden 区分配</strong></p>
+<p>多数情况，对象都在新生代 Eden 区分配。当 Eden 区分配没有足够的空间进行 分配时，虚拟机将会发起一次 Minor GC。如果本次 GC后还是没有足够的空 间，则将启用分配担保机制在老年代中分配内存。</p>
+<p>这里我们提到 Minor GC，如果你仔细观察过 GC 日常，通常我们还能从日志中 发现 Major GC&#x2F;Full GC。</p>
+<ul>
+<li><strong>Minor GC</strong> 是指发生在新生代的 GC，因为 Java 对象大多都是朝生夕死，所 有 Minor GC 非常频繁，一般回收速度也非常快；</li>
+<li><strong>Major GC&#x2F;Full GC</strong> 是指发生在老年代的 GC，出现了 Major GC 通常会伴 随至少一次 Minor GC。Major GC 的速度通常会比 Minor GC 慢 10 倍以上。</li>
+</ul>
+<p><strong>大对象</strong>直<strong>接进入老年代</strong></p>
+<p>所谓大对象是指需要大量连续内存空间的对象，频繁出现大对象是致命的，会导 致在内存还有不少空间的情况下提前触发 GC 以获取足够的连续空间来安置新对 象。</p>
+<p>前面我们介绍过新生代使用的是标记-清除算法来处理垃圾回收的，如果大对象 直接在新生代分配就会导致 Eden 区和两个 Survivor 区之间发生大量的内存复制。因此对于大对象都会直接在老年代进行分配。</p>
+<p><strong>长期存</strong>活<strong>对象将进入老年代</strong></p>
+<p>虚拟机采用分代收集的思想来管理内存，那么内存回收时就必须判断哪些对象应 该放在新生代，哪些对象应该放在老年代。因此虚拟机给每个对象定义了一个对 象年龄的计数器，如果对象在 Eden 区出生，并且能够被 Survivor 容纳，将被 移动到 Survivor 空间中，这时设置对象年龄为 1。对象在 Survivor 区中每「熬 过」一次 Minor GC 年龄就加 1，当年龄达到一定程度（默认 15） 就会被晋升 到老年代。</p>
+<p><strong>虚</strong>拟机类加载机制**</p>
+<p><strong>简述java类加载机制?</strong></p>
+<p>虚拟机把描述类的数据从Class文件加载到内存，并对数据进行校验，解析和初 始化，最终形成可以被虚拟机直接使用的java类型。</p>
+<p><strong>描述一下JVM加载Class文件的原理机制</strong></p>
+<p>Java中的所有类，都需要由类加载器装载到JVM中才能运行。类加载器本身也 是一个类，而它的工作就是把class文件从硬盘读取到内存中。在写程序的时 候，我们几乎不需要关心类的加载，因为这些都是隐式装载的，除非我们有特殊 的用法，像是反射，就需要显式的加载所需要的类。</p>
+<p>类装载方式，有两种 ：</p>
+<p>1.隐式装载， 程序在运行过程中当碰到通过new 等方式生成对象时，隐式调用 类装载器加载对应的类到jvm中，</p>
+<p>2.显式装载， 通过class.forname() 等方法，显式加载需要的类</p>
+<p>Java类的加载是动态的，它并不会一次性将所有类全部加载后再运行，而是保证 程序运行的基础类(像是基类)完全加载到jvm中，至于其他类，则在需要的时候 才加载。这当然就是为了节省内存开销。</p>
+<p><strong>什么是类加载器，类加载器有哪些?</strong></p>
+<p>实现通过类的权限定名获取该类的二进制字节流的代码块叫做类加载器。 主要有一下四种类加载器:</p>
+<ol>
+<li><p>启动类加载器(Bootstrap ClassLoader)用来加载java核心类库，无法被 java程序直接引用。</p>
+</li>
+<li><p>扩展类加载器(extensions class loader): 它用来加载 Java 的扩展库。 Java 虚拟机的实现会提供一个扩展库目录。该类加载器在此目录里面查找 并加载 Java 类。</p>
+</li>
+<li><p>系统类加载器（system class loader ）：它根据 Java 应用的类路径 （CLASSPATH ）来加载 Java 类。一般来说，Java 应用的类都是由它来 完成加载的。可以通过 ClassLoader.getSystemClassLoader()来获取 它。</p>
+</li>
+<li><p>用户自定义类加载器，通过继承 java.lang.ClassLoader类的方式实</p>
+</li>
+</ol>
+<p>现。</p>
+<p><strong>说一下类装载的执行过程？</strong></p>
+<p>类装载分为以下 5个步骤：</p>
+<p>加载：根据查找路径找到相应的 class 文件然后导入；</p>
+<p>验证：检查加载的 class 文件的正确性；</p>
+<p>准备：给类中的静态变量分配内存空间；</p>
+<p>解析：虚拟机将常量池中的符号引用替换成直接引用的过程。符号引用就理解为 一个标示，而在直接引用直接指向内存中的地址；</p>
+<p>初始化：对静态变量和静态代码块执行初始化工作。</p>
+<p><strong>什么是双亲委派模型？</strong></p>
+<p>在介绍双亲委派模型之前先说下类加载器。对于任意一个类，都需要由加载它的 类加载器和这个类本身一同确立在 JVM 中的唯一性，每一个类加载器，都有一 个独立的类名称空间。类加载器就是根据指定全限定名称将 class 文件加载到 JVM 内存，然后再转化为 class 对象。</p>
+<p><img src="F:\0马士兵\新建文件夹\BAT面试突击资料(1)\OUT\03-2020最新整理一线大厂面试题合集(重点看)\08-Java虚拟机(JVM)面试题（2020最新版）-重点.assets/双亲委派.png" alt="双亲委派"></p>
+<p>类加载器分类：</p>
+<ul>
+<li><p>启动类加载器（Bootstrap ClassLoader），是虚拟机自身的一部分，用来加载 Java_HOME&#x2F;lib&#x2F;目录中的，或者被 -Xbootclasspath 参数所指定的路径中并且被虚 拟机识别的类库；</p>
+</li>
+<li><p>其他类加载器：</p>
+<ul>
+<li>扩展类加载器（Extension ClassLoader）：负责加载\lib\ext目录或Java. ext. dirs系统变量指定的路径中的所有类库；</li>
+<li>应用程序类加载器（Application ClassLoader）。负责加载用户类路径 （classpath）上的指定类库，我们可以直接使用这个类加载器。一般情况，如果我 们没有自定义类加载器默认就是用这个加载器。</li>
+</ul>
+</li>
+</ul>
+<p>双亲委派模型：如果一个类加载器收到了类加载的请求，它首先不会自己去加载 这个类，而是把这个请求委派给父类加载器去完成，每一层的类加载器都是如 此，这样所有的加载请求都会被传送到顶层的启动类加载器中，只有当父加载无 法完成加载请求（它的搜索范围中没找到所需的类）时，子加载器才会尝试去加 载类。</p>
+<p>当一个类收到了类加载请求时，不会自己先去加载这个类，而是将其委派给父 类，由父类去加载，如果此时父类不能加载，反馈给子类，由子类去完成类的加 载。</p>
+<p><strong>JVM</strong>调<strong>优</strong></p>
+<p><strong>说一下 JVM 调优的工具？</strong></p>
+<p>JDK 自带了很多监控工具，都位于 JDK 的 bin 目录下，其中最常用的是 jconsole 和 jvisualvm 这两款视图监控工具。</p>
+<ul>
+<li>jconsole：用于对 JVM 中的内存、线程和类等进行监控；</li>
+<li>jvisualvm：JDK 自带的全能分析工具，可以分析：内存快照、线程快照、程序 死锁、监控内存的变化、gc 变化等。</li>
+</ul>
+<p><strong>常用的 JVM 调优的参数都有哪些？</strong></p>
+<ul>
+<li>-Xms2g：初始化推大小为 2g；</li>
+<li>-Xmx2g：堆最大内存为 2g；</li>
+<li>-XX:NewRatio&#x3D;4：设置年轻的和老年代的内存比例为 1:4； -XX:SurvivorRatio&#x3D;8：设置新生代 Eden 和 Survivor 比例为 8:2； –XX:+UseParNewGC：指定使用 ParNew + Serial Old 垃圾回收器组合； -XX:+UseParallelOldGC：指定使用 ParNew + ParNew Old 垃圾回收器组</li>
+<li>合；</li>
+<li>-XX:+UseConcMarkSweepGC：指定使用 CMS + Serial Old 垃圾回收器组 合；</li>
+<li>-XX:+PrintGC：开启打印 gc 信息；</li>
+<li>-XX:+PrintGCDetails：打印 gc 详细信息。</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Muise</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://blog.muise.tk/2022/04/27/08-Java%E8%99%9A%E6%8B%9F%E6%9C%BA(JVM)%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89-%E9%87%8D%E7%82%B9/">https://blog.muise.tk/2022/04/27/08-Java%E8%99%9A%E6%8B%9F%E6%9C%BA(JVM)%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89-%E9%87%8D%E7%82%B9/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://blog.muise.tk" target="_blank">Muise</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2020/12/10/e2E7d5mRJstTNu9.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/04/27/09-MySQL%E6%95%B0%E6%8D%AE%E5%BA%93%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89-%E9%87%8D%E7%82%B9/"><img class="prev-cover" src="https://i.loli.net/2020/12/10/6U2CcwkzxjRtrNV.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info"></div></div></a></div><div class="next-post pull-right"><a href="/2022/04/27/07-MyBatis%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89/"><img class="next-cover" src="https://i.loli.net/2020/12/10/CgE6Owbin4kDFId.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info"></div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://blog.muise.tk/img/favicon.png" onerror="this.onerror=null;this.src='/img/favicon.png'" alt="avatar"/></div><div class="author-info__name">Muise</div><div class="author-info__description"></div></div><div class="card-info-data is-center"><div class="card-info-data-item"><a href="/archives/"><div class="headline">文章</div><div class="length-num">22</div></a></div><div class="card-info-data-item"><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a></div><div class="card-info-data-item"><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div></div><a id="card-info-btn" href="https://blog.muise.tk"><i class="fa fa-bookmark"></i><span>点它 点它</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/junsijia" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:liu1989047@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">自觉此心无一事，小鱼跳出绿萍中。</div></div><div class="xpand" style="height:200px;"><canvas class="illo" width="800" height="800" style="max-width: 200px; max-height: 200px; touch-action: none; width: 640px; height: 640px;"></canvas></div><script src="https://cdn.jsdelivr.net/gh/xiaopengand/blogCdn@latest/xzxr/twopeople1.js"></script><script src="https://cdn.jsdelivr.net/gh/xiaopengand/blogCdn@latest/xzxr/zdog.dist.js"></script><script id="rendered-js" src="https://cdn.jsdelivr.net/gh/xiaopengand/blogCdn@latest/xzxr/twopeople.js"></script><style>.card-widget.card-announcement {
+margin: 0;
+align-items: center;
+justify-content: center;
+text-align: center;
+}
+canvas {
+display: block;
+margin: 0 auto;
+cursor: move;
+}</style></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B4%E4%B8%80%E4%B8%8B-JVM-%E7%9A%84%E4%B8%BB%E8%A6%81%E7%BB%84%E6%88%90%E9%83%A8%E5%88%86%E5%8F%8A%E5%85%B6%E4%BD%9C%E7%94%A8%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">说一下 JVM 的主要组成部分及其作用？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B4%E4%B8%80%E4%B8%8B-JVM-%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA"><span class="toc-number">2.</span> <span class="toc-text">说一下 JVM 运行时数据区</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%B1%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B5%85%E6%8B%B7%E8%B4%9D"><span class="toc-number">3.</span> <span class="toc-text">深拷贝和浅拷贝</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%B4%E4%B8%80%E4%B8%8B%E5%A0%86%E6%A0%88%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="toc-number">4.</span> <span class="toc-text">说一下堆栈的区别？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%98%9F%E5%88%97%E5%92%8C%E6%A0%88%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">队列和栈是什么？有什么区别？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%88%9B%E5%BB%BA"><span class="toc-number">6.</span> <span class="toc-text">对象的创建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E5%AF%B9%E8%B1%A1%E5%88%86%E9%85%8D%E5%86%85%E5%AD%98"><span class="toc-number">7.</span> <span class="toc-text">为对象分配内存</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%84%E7%90%86%E5%B9%B6%E5%8F%91%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98"><span class="toc-number">8.</span> <span class="toc-text">处理并发安全问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1%E7%9A%84%E8%AE%BF%E9%97%AE%E5%AE%9A%E4%BD%8D"><span class="toc-number">9.</span> <span class="toc-text">对象的访问定位</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%A5%E6%9F%84%E8%AE%BF%E9%97%AE"><span class="toc-number">9.1.</span> <span class="toc-text">句柄访问</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%B4%E6%8E%A5%E6%8C%87%E9%92%88"><span class="toc-number">9.2.</span> <span class="toc-text">直接指针</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%BC%82%E5%B8%B8-Java%E4%BC%9A%E5%AD%98%E5%9C%A8%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E5%90%97%EF%BC%9F%E8%AF%B7%E7%AE%80%E5%8D%95%E6%8F%8F%E8%BF%B0"><span class="toc-number">10.</span> <span class="toc-text">内存溢出异常 Java会存在内存泄漏吗？请简单描述</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%BC%82%E5%B8%B8"><span class="toc-number"></span> <span class="toc-text">内存溢出异常**</span></a></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/04/27/03-Java%E5%BC%82%E5%B8%B8%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89/" title="无题"><img src="https://i.loli.net/2020/12/10/ZsW3yG2qx5loJNv.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无题"/></a><div class="content"><a class="title" href="/2022/04/27/03-Java%E5%BC%82%E5%B8%B8%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89/" title="无题">无题</a><time datetime="2022-04-26T16:22:24.405Z" title="发表于 2022-04-27 00:22:24">2022-04-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/04/27/02-Java%E9%9B%86%E5%90%88%E5%AE%B9%E5%99%A8%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89-%E9%87%8D%E7%82%B9/" title="无题"><img src="https://i.loli.net/2020/12/10/kxQpSW8HX9sbvne.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无题"/></a><div class="content"><a class="title" href="/2022/04/27/02-Java%E9%9B%86%E5%90%88%E5%AE%B9%E5%99%A8%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89-%E9%87%8D%E7%82%B9/" title="无题">无题</a><time datetime="2022-04-26T16:22:24.403Z" title="发表于 2022-04-27 00:22:24">2022-04-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/04/27/01-Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89/" title="Java基础知识面试题"><img src="https://i.loli.net/2020/12/10/2t4XKc6hpgxYLN1.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Java基础知识面试题"/></a><div class="content"><a class="title" href="/2022/04/27/01-Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89/" title="Java基础知识面试题">Java基础知识面试题</a><time datetime="2022-04-26T16:22:24.402Z" title="发表于 2022-04-27 00:22:24">2022-04-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/04/27/22-23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%80%BB%E7%BB%93%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89/" title="无题"><img src="https://i.loli.net/2020/12/10/jI1Rwkn8d2Cz54W.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无题"/></a><div class="content"><a class="title" href="/2022/04/27/22-23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E6%80%BB%E7%BB%93%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89/" title="无题">无题</a><time datetime="2022-04-26T16:22:23.225Z" title="发表于 2022-04-27 00:22:23">2022-04-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/04/27/21-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89-%E9%87%8D%E7%82%B9/" title="无题"><img src="https://i.loli.net/2020/12/10/ETr1LyXZuOn4YvW.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无题"/></a><div class="content"><a class="title" href="/2022/04/27/21-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%882020%E6%9C%80%E6%96%B0%E7%89%88%EF%BC%89-%E9%87%8D%E7%82%B9/" title="无题">无题</a><time datetime="2022-04-26T16:22:23.223Z" title="发表于 2022-04-27 00:22:23">2022-04-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://i.loli.net/2020/12/10/e2E7d5mRJstTNu9.jpg')"><div id="footer-wrap"></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">簡</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><div class="js-pjax"><script src="https://cdn.jsdelivr.net/gh/xiaopengand/blogCdn@latest/Valine.min.js"></script><script>var requestSetting = function (from,set) {
+  var from = from
+  var setting = set.split(',').filter(function(item){
+  return from.indexOf(item) > -1
+  });
+  setting = setting.length == 0 ? from :setting;
+  return setting
+}
+
+var guestInfo = requestSetting(['nick','mail','link'],'nick,mail,link')
+var requiredFields = requestSetting(['nick','mail','link'],'nick,mail')
+let friends = ''.split(',')
+let master = ''.split(',')
+let tagMeta = '博主,小伙伴,访客'.split(',')
+
+function loadValine () {
+  function initValine () {
+    window.valine = new Valine({
+      el: '#vcomment',
+      appId: 'n2ky955cEwmG2fXTPR2brhV8-gzGzoHsz',
+      appKey: 'j9yWSwEobTaIXHFl6TUDfDqU',
+      placeholder: '📌月亮很亮，亮也没用，没用也亮。我在想你，想你没用，没用也想📌',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: {"bilibili_罗小黑_自来水":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_自来水.png","bilibili_罗小黑_真棒":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_真棒.png","bilibili_罗小黑_找彩蛋":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_找彩蛋.png","bilibili_罗小黑_歪在吗":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_歪在吗.png","bilibili_罗小黑_撒花":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_撒花.png","bilibili_罗小黑_求包养":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_求包养.png","bilibili_罗小黑_你好呀":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_你好呀.png","bilibili_罗小黑_来了":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_来了.png","bilibili_罗小黑_可可爱爱":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_可可爱爱.png","bilibili_罗小黑_看电影":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_看电影.png","bilibili_罗小黑_加油":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_加油.png","bilibili_罗小黑_嗨":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_嗨.png","bilibili_罗小黑_鼓掌":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_鼓掌.png","bilibili_罗小黑_干杯":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_干杯.png","bilibili_罗小黑_大麦":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_大麦.png","bilibili_罗小黑_吃瓜":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bilibili/罗小黑_吃瓜.png","酷安_coolapk_emotion_1021":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_1021.png","酷安_coolapk_emotion_1020":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_1020.png","酷安_coolapk_emotion_1019":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_1019.png","酷安_coolapk_emotion_1018":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_1018.png","酷安_coolapk_emotion_1017":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_1017.png","酷安_coolapk_emotion_1016":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_1016.png","酷安_coolapk_emotion_1015":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_1015.png","酷安_coolapk_emotion_1014":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_1014.png","酷安_coolapk_emotion_1013":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_1013.png","酷安_coolapk_emotion_1012":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_1012.png","酷安_coolapk_emotion_1011":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_1011.png","酷安_coolapk_emotion_1010":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_1010.png","酷安_coolapk_emotion_109":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_109.png","酷安_coolapk_emotion_108":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_108.png","酷安_coolapk_emotion_107":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_107.png","酷安_coolapk_emotion_106":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_106.png","酷安_coolapk_emotion_105":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_105.png","酷安_coolapk_emotion_104":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_104.png","酷安_coolapk_emotion_103_nb":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_103_nb.png","酷安_coolapk_emotion_102_fadai":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_102_fadai.png","酷安_coolapk_emotion_101_pyjiaoyi":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_101_pyjiaoyi.png","酷安_coolapk_emotion_100_qqdoge":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_100_qqdoge.png","酷安_coolapk_emotion_99_zhoumei":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_99_zhoumei.png","酷安_coolapk_emotion_98_wunai":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_98_wunai.png","酷安_coolapk_emotion_97_haixiu":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_97_haixiu.png","酷安_coolapk_emotion_96_kuanlvmao":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_96_kuanlvmao.png","酷安_coolapk_emotion_95_erhading":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_95_erhading.png","酷安_coolapk_emotion_94":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_94.png","酷安_coolapk_emotion_93":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_93.png","酷安_coolapk_emotion_92":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_92.png","酷安_coolapk_emotion_91":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_91.png","酷安_coolapk_emotion_90":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_90.png","酷安_coolapk_emotion_89":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_89.png","酷安_coolapk_emotion_88":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_88.png","酷安_coolapk_emotion_87":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_87.png","酷安_coolapk_emotion_86":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_86.png","酷安_coolapk_emotion_85":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_85.png","酷安_coolapk_emotion_84_baiyan":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_84_baiyan.png","酷安_coolapk_emotion_83_huoba":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_83_huoba.png","酷安_coolapk_emotion_82_miaomiao":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_82_miaomiao.png","酷安_coolapk_emotion_81_naikezui":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_81_naikezui.png","酷安_coolapk_emotion_80":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_80.png","酷安_coolapk_emotion_79":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_79.png","酷安_coolapk_emotion_78":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_78.png","酷安_coolapk_emotion_77":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_77.png","酷安_coolapk_emotion_76":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_76.png","酷安_coolapk_emotion_75":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_75.png","酷安_coolapk_emotion_74":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_74.png","酷安_coolapk_emotion_73":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_73.png","酷安_coolapk_emotion_72":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_72.png","酷安_coolapk_emotion_71":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_71.png","酷安_coolapk_emotion_70":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_70.png","酷安_coolapk_emotion_69":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_69.png","酷安_coolapk_emotion_68":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_68.png","酷安_coolapk_emotion_67_mojinghuaji":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_67_mojinghuaji.png","酷安_coolapk_emotion_66_doujiyanhuaji":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_66_doujiyanhuaji.png","酷安_coolapk_emotion_65_coshuaji":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_65_coshuaji.png","酷安_coolapk_emotion_64_shounuehuaji":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_64_shounuehuaji.png","酷安_coolapk_emotion_63_liuhanhuaji":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_63_liuhanhuaji.png","酷安_coolapk_emotion_62_huaji":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_62_huaji.png","酷安_coolapk_emotion_61_lvmao":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_61_lvmao.png","酷安_coolapk_emotion_60_kuan":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_60_kuan.png","酷安_coolapk_emotion_59_erha":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_59_erha.png","酷安_coolapk_emotion_58_dogeyuanliangta":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_58_dogeyuanliangta.png","酷安_coolapk_emotion_57_dogehechi":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_57_dogehechi.png","酷安_coolapk_emotion_56_dogexiaoku":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_56_dogexiaoku.png","酷安_coolapk_emotion_55_lvyaowan":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_55_lvyaowan.png","酷安_coolapk_emotion_54_hongyaowan":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_54_hongyaowan.png","酷安_coolapk_emotion_53_pu":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_53_pu.png","酷安_coolapk_emotion_52_hejiu":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_52_hejiu.png","酷安_coolapk_emotion_51_chigua":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_51_chigua.png","酷安_coolapk_emotion_50_xinsui":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_50_xinsui.png","酷安_coolapk_emotion_49_huanhu":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_49_huanhu.png","酷安_coolapk_emotion_48_weiweiyixiao":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_48_weiweiyixiao.png","酷安_coolapk_emotion_47_weiqu":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_47_weiqu.png","酷安_coolapk_emotion_46_nanguo":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_46_nanguo.png","酷安_coolapk_emotion_45_yinxian":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_45_yinxian.png","酷安_coolapk_emotion_44_pen":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_44_pen.png","酷安_coolapk_emotion_43_heixian":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_43_heixian.png","酷安_coolapk_emotion_42_diaoxie":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_42_diaoxie.png","酷安_coolapk_emotion_41_meigui":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_41_meigui.png","酷安_coolapk_emotion_40_aixin":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_40_aixin.png","酷安_coolapk_emotion_39_caidao":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_39_caidao.png","酷安_coolapk_emotion_38_wozuimei":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_38_wozuimei.png","酷安_coolapk_emotion_37_doge":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_37_doge.png","酷安_coolapk_emotion_36_ku":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_36_ku.png","酷安_coolapk_emotion_35_ye":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_35_ye.png","酷安_coolapk_emotion_34_jizhi":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_34_jizhi.png","酷安_coolapk_emotion_33_wulian":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_33_wulian.png","酷安_coolapk_emotion_32_heiha":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_32_heiha.png","酷安_coolapk_emotion_31_xiaoku":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_31_xiaoku.png","酷安_coolapk_emotion_30_ok":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_30_ok.png","酷安_coolapk_emotion_29_baoquan":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_29_baoquan.png","酷安_coolapk_emotion_28_ruo":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_28_ruo.png","酷安_coolapk_emotion_27_qiang":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_27_qiang.png","酷安_coolapk_emotion_26_kelian":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_26_kelian.png","酷安_coolapk_emotion_25_zaijian":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_25_zaijian.png","酷安_coolapk_emotion_24_wuzuixiao":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_24_wuzuixiao.png","酷安_coolapk_emotion_23_shui":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_23_shui.png","酷安_coolapk_emotion_22_xiaoyan":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_22_xiaoyan.png","酷安_coolapk_emotion_21_penxue":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_21_penxue.png","酷安_coolapk_emotion_20_qinqin":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_20_qinqin.png","酷安_coolapk_emotion_19_koubi":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_19_koubi.png","酷安_coolapk_emotion_18_han":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_18_han.png","酷安_coolapk_emotion_17_tushe":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_17_tushe.png","酷安_coolapk_emotion_16_tuosai":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_16_tuosai.png","酷安_coolapk_emotion_15_fanu":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_15_fanu.png","酷安_coolapk_emotion_14_bishi":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_14_bishi.png","酷安_coolapk_emotion_13_huaixiao":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_13_huaixiao.png","酷安_coolapk_emotion_12_wuyu":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_12_wuyu.png","酷安_coolapk_emotion_11_yiwen":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_11_yiwen.png","酷安_coolapk_emotion_10_aoman":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_10_aoman.png","酷安_coolapk_emotion_9_se":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_9_se.png","酷安_coolapk_emotion_8_piezui":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_8_piezui.png","酷安_coolapk_emotion_7_hehe":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_7_hehe.png","酷安_coolapk_emotion_6_weixiao":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_6_weixiao.png","酷安_coolapk_emotion_5_keai":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_5_keai.png","酷安_coolapk_emotion_4_liulei":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_4_liulei.png","酷安_coolapk_emotion_3_ciya":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_3_ciya.png","酷安_coolapk_emotion_2_jingya":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_2_jingya.png","酷安_coolapk_emotion_1_hahaha":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/coolapk_emotion_1_hahaha.png","酷安_c_ty":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_ty.png","酷安_c_twoy":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_twoy.png","酷安_c_twoo":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_twoo.png","酷安_c_twom":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_twom.png","酷安_c_twof":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_twof.png","酷安_c_twod":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_twod.png","酷安_c_teny":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_teny.png","酷安_c_oy":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_oy.png","酷安_c_oney":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_oney.png","酷安_c_oneo":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_oneo.png","酷安_c_onem":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_onem.png","酷安_c_onef":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_onef.png","酷安_c_oned":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_oned.png","酷安_c_fy":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_fy.png","酷安_c_fivey":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_fivey.png","酷安_c_fiveo":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_fiveo.png","酷安_c_fivem":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_fivem.png","酷安_c_fivef":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_fivef.png","酷安_c_fived":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_fived.png","酷安_c_coolb":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/酷安/c_coolb.png","bili_tv_gif_抓狂":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/抓狂.gif","bili_tv_gif_再见":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/再见.gif","bili_tv_gif_晕":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/晕.gif","bili_tv_gif_疑问":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/疑问.gif","bili_tv_gif_斜眼笑":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/斜眼笑.gif","bili_tv_gif_笑哭":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/笑哭.gif","bili_tv_gif_无奈":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/无奈.gif","bili_tv_gif_委屈":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/委屈.gif","bili_tv_gif_微笑":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/微笑.gif","bili_tv_gif_吐血":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/吐血.gif","bili_tv_gif_偷笑":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/偷笑.gif","bili_tv_gif_思考":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/思考.gif","bili_tv_gif_睡着":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/睡着.gif","bili_tv_gif_生气":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/生气.gif","bili_tv_gif_生病":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/生病.gif","bili_tv_gif_色":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/色.gif","bili_tv_gif_亲亲":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/亲亲.gif","bili_tv_gif_呕吐":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/呕吐.gif","bili_tv_gif_难过":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/难过.gif","bili_tv_gif_腼腆":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/腼腆.gif","bili_tv_gif_流汗":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/流汗.gif","bili_tv_gif_流鼻血":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/流鼻血.gif","bili_tv_gif_困":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/困.gif","bili_tv_gif_抠鼻子":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/抠鼻子.gif","bili_tv_gif_可爱":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/可爱.gif","bili_tv_gif_惊吓":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/惊吓.gif","bili_tv_gif_坏笑":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/坏笑.gif","bili_tv_gif_黑人问号":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/黑人问号.gif","bili_tv_gif_害羞":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/害羞.gif","bili_tv_gif_鼓掌":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/鼓掌.gif","bili_tv_gif_尴尬":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/尴尬.gif","bili_tv_gif_发怒":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/发怒.gif","bili_tv_gif_发财":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/发财.gif","bili_tv_gif_调皮":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/调皮.gif","bili_tv_gif_点赞":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/点赞.gif","bili_tv_gif_呆":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/呆.gif","bili_tv_gif_大佬":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/大佬.gif","bili_tv_gif_大哭":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/大哭.gif","bili_tv_gif_打脸":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/打脸.gif","bili_tv_gif_馋":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/馋.gif","bili_tv_gif_闭嘴":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/闭嘴.gif","bili_tv_gif_鄙视":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/鄙视.gif","bili_tv_gif_白眼":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/白眼.gif","bili_tv_gif_doge":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/bili_tv_gif/doge.gif","恶搞QQ_180":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/180.gif","恶搞QQ_179":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/179.gif","恶搞QQ_178":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/178.gif","恶搞QQ_177":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/177.gif","恶搞QQ_176":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/176.gif","恶搞QQ_175":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/175.gif","恶搞QQ_174":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/174.gif","恶搞QQ_173":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/173.gif","恶搞QQ_172":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/172.gif","恶搞QQ_171":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/171.gif","恶搞QQ_170":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/170.gif","恶搞QQ_169":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/169.gif","恶搞QQ_168":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/168.gif","恶搞QQ_167":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/167.gif","恶搞QQ_166":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/166.gif","恶搞QQ_165":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/165.gif","恶搞QQ_164":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/164.gif","恶搞QQ_163":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/163.gif","恶搞QQ_162":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/162.gif","恶搞QQ_161":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/161.gif","恶搞QQ_160":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/160.gif","恶搞QQ_159":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/159.gif","恶搞QQ_158":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/158.jpg","恶搞QQ_157":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/157.gif","恶搞QQ_156":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/156.gif","恶搞QQ_155":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/155.gif","恶搞QQ_154":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/154.gif","恶搞QQ_153":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/153.gif","恶搞QQ_152":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/152.png","恶搞QQ_151":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/151.gif","恶搞QQ_150":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/150.gif","恶搞QQ_149":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/149.gif","恶搞QQ_148":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/148.gif","恶搞QQ_147":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/147.gif","恶搞QQ_146":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/146.gif","恶搞QQ_145":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/145.gif","恶搞QQ_144":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/144.gif","恶搞QQ_143":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/143.gif","恶搞QQ_142":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/142.gif","恶搞QQ_141":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/141.gif","恶搞QQ_140":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/140.gif","恶搞QQ_139":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/139.gif","恶搞QQ_138":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/138.gif","恶搞QQ_137":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/137.gif","恶搞QQ_136":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/136.gif","恶搞QQ_135":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/135.gif","恶搞QQ_134":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/134.gif","恶搞QQ_133":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/133.jpg","恶搞QQ_132":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/132.gif","恶搞QQ_131":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/131.gif","恶搞QQ_130":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/130.gif","恶搞QQ_129":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/129.gif","恶搞QQ_128":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/128.gif","恶搞QQ_127":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/127.gif","恶搞QQ_126":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/126.gif","恶搞QQ_125":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/125.gif","恶搞QQ_124":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/124.gif","恶搞QQ_123":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/123.gif","恶搞QQ_122":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/122.gif","恶搞QQ_121":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/121.gif","恶搞QQ_120":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/120.gif","恶搞QQ_119":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/119.gif","恶搞QQ_118":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/118.gif","恶搞QQ_117":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/117.gif","恶搞QQ_116":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/116.gif","恶搞QQ_115":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/115.gif","恶搞QQ_114":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/114.gif","恶搞QQ_113":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/113.gif","恶搞QQ_112":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/112.gif","恶搞QQ_111":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/111.gif","恶搞QQ_110":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/110.gif","恶搞QQ_109":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/109.jpg","恶搞QQ_108":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/108.gif","恶搞QQ_107":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/107.gif","恶搞QQ_106":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/106.gif","恶搞QQ_105":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/105.gif","恶搞QQ_104":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/104.gif","恶搞QQ_103":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/103.gif","恶搞QQ_102":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/102.gif","恶搞QQ_101":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/101.gif","恶搞QQ_100":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/100.gif","恶搞QQ_99":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/99.gif","恶搞QQ_98":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/98.gif","恶搞QQ_97":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/97.gif","恶搞QQ_96":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/96.jpg","恶搞QQ_95":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/95.gif","恶搞QQ_94":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/94.gif","恶搞QQ_93":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/93.gif","恶搞QQ_92":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/92.gif","恶搞QQ_91":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/91.gif","恶搞QQ_90":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/90.gif","恶搞QQ_89":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/89.gif","恶搞QQ_88":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/88.gif","恶搞QQ_87":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/87.gif","恶搞QQ_86":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/86.gif","恶搞QQ_85":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/85.gif","恶搞QQ_84":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/84.gif","恶搞QQ_83":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/83.gif","恶搞QQ_82":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/82.gif","恶搞QQ_81":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/81.jpg","恶搞QQ_80":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/80.gif","恶搞QQ_79":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/79.gif","恶搞QQ_78":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/78.gif","恶搞QQ_77":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/77.gif","恶搞QQ_76":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/76.gif","恶搞QQ_75":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/75.jpg","恶搞QQ_74":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/74.gif","恶搞QQ_73":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/73.gif","恶搞QQ_72":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/72.gif","恶搞QQ_71":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/71.gif","恶搞QQ_70":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/70.gif","恶搞QQ_69":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/69.gif","恶搞QQ_68":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/68.gif","恶搞QQ_67":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/67.gif","恶搞QQ_66":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/66.gif","恶搞QQ_65":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/65.jpg","恶搞QQ_64":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/64.gif","恶搞QQ_63":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/63.gif","恶搞QQ_62":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/62.gif","恶搞QQ_61":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/61.gif","恶搞QQ_60":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/60.gif","恶搞QQ_59":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/59.gif","恶搞QQ_58":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/58.gif","恶搞QQ_57":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/57.gif","恶搞QQ_56":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/56.gif","恶搞QQ_55":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/55.jpg","恶搞QQ_54":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/54.gif","恶搞QQ_53":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/53.gif","恶搞QQ_52":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/52.gif","恶搞QQ_51":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/51.jpg","恶搞QQ_50":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/50.gif","恶搞QQ_49":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/49.gif","恶搞QQ_48":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/48.gif","恶搞QQ_47":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/47.gif","恶搞QQ_46":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/46.gif","恶搞QQ_45":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/45.gif","恶搞QQ_44":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/44.gif","恶搞QQ_43":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/43.gif","恶搞QQ_42":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/42.gif","恶搞QQ_41":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/41.gif","恶搞QQ_40":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/40.gif","恶搞QQ_39":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/39.gif","恶搞QQ_38":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/38.gif","恶搞QQ_37":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/37.gif","恶搞QQ_36":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/36.gif","恶搞QQ_35":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/35.gif","恶搞QQ_34":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/34.gif","恶搞QQ_33":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/33.gif","恶搞QQ_32":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/32.gif","恶搞QQ_31":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/31.gif","恶搞QQ_30":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/30.gif","恶搞QQ_29":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/29.gif","恶搞QQ_28":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/28.gif","恶搞QQ_27":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/27.gif","恶搞QQ_26":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/26.gif","恶搞QQ_25":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/25.gif","恶搞QQ_24":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/24.gif","恶搞QQ_23":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/23.gif","恶搞QQ_22":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/22.gif","恶搞QQ_21":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/21.gif","恶搞QQ_20":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/20.gif","恶搞QQ_19":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/19.gif","恶搞QQ_18":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/18.gif","恶搞QQ_17":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/17.gif","恶搞QQ_16":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/16.gif","恶搞QQ_15":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/15.gif","恶搞QQ_14":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/14.gif","恶搞QQ_13":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/13.gif","恶搞QQ_12":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/12.png","恶搞QQ_11":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/11.gif","恶搞QQ_10":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/10.png","恶搞QQ_9":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/9.gif","恶搞QQ_8":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/8.gif","恶搞QQ_7":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/7.gif","恶搞QQ_6":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/6.gif","恶搞QQ_5":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/5.gif","恶搞QQ_4":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/4.gif","恶搞QQ_3":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/3.gif","恶搞QQ_2":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/2.gif","恶搞QQ_1":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/恶搞QQ/1.gif","custom_32":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/31.webp","custom_31":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/30.gif","custom_30":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/29.webp","custom_29":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/28.webp","custom_28":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/27.webp","custom_27":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/26.webp","custom_26":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/25.jpg","custom_25":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/24.webp","custom_24":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/23.webp","custom_23":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/22.webp","custom_22":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/21.webp","custom_21":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/20.webp","custom_20":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/19.webp","custom_19":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/18.jpg","custom_18":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/17.webp","custom_17":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/16.webp","custom_16":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/15.webp","custom_15":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/14.webp","custom_14":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/13.webp","custom_13":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/12.webp","custom_12":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/11.webp","custom_11":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/10.webp","custom_10":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/9.webp","custom_9":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/8.webp","custom_8":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/7.webp","custom_7":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/6.gif","custom_6":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/5.gif","custom_5":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/4.jpg","custom_4":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/3.jpg","custom_3":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/2.webp","custom_2":"https://cdn.jsdelivr.net/gh/xiaopengand/emotion/custom/1.webp"},
+      enableQQ: true,
+      path: window.location.pathname,
+      master: master,
+      friends: friends,
+      tagMeta: tagMeta,
+      metaPlaceholder: {"nick":"昵称/QQ号(必填)","mail":"邮箱(必填)","link":"网址(https://)","tagMeta":"博主,小伙伴,访客"}
+    });
+    if ('nick,mail') { valine.config.requiredFields= 'nick,mail'.split(',') }
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else $.getScript('https://cdn.jsdelivr.net/gh/xiaopengand/blogCdn@latest/Valine.min.js', initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) loadComment(document.querySelector('#vcomment'),loadValine)
+  else setTimeout(() => loadValine(), 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script src="https://cdn.jsdelivr.net/gh/xiaopengand/blogCdn@latest/fishes.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/click-show-text.min.js" data-mobile="true" data-text="富强,民主,文明,和谐,爱国,敬业,诚信,友善,自由,平等,公正,法治" data-fontsize="15px" data-random="true" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
